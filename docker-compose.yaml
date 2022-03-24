@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  database:
+    container_name: db
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: student
+      POSTGRES_DB: student
+  backend:
+    container_name: be
+    build: "./backend"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      - PGUSER=dev
+      - PGHOST=db
+      - PGPASSWORD=student
+      - PGDATABASE=student
+      - PGPORT=5432
+    volumes:
+      - /C:\Users\Nikola\Desktop\faks\zavrsni\backend:/app
+      - /app/node_modules
+  frontend:
+    container_name: fe
+    build: "./frontend"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
