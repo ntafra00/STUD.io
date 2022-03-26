@@ -1,10 +1,8 @@
 import express, { Request, Response } from "express";
-<<<<<<< HEAD
-import { createTables } from "./db/db"
-=======
 import { createTables } from "./db/db";
 import session from "express-session"
->>>>>>> 07fec92 (add backend routes)
+import { authRouter } from "./routes/auth";
+import cors from "cors"
 
 const app = express();
 
@@ -13,10 +11,8 @@ createTables()
     .then()
     .catch((err) => console.log(err))
 
-<<<<<<< HEAD
-app.get('/', (req: Request, res: Response) => {
-    return res.send("Hello World.,,,,,");
-=======
+
+// session    
 app.use(session({
     secret: "kJhGohECA5C3x8P8yqWYUbwkluKeHBUx",
     saveUninitialized: false,
@@ -29,10 +25,22 @@ app.use(session({
 // json middleware
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-    return res.send("Hello World..............");
->>>>>>> 07fec92 (add backend routes)
-})
+// cors setup
+
+app.use(cors({
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    credentials: true,
+    origin: ["http://localhost:3000"],
+}));
+
+// different routes
+
+app.use("/api/auth", authRouter);
+
+// for(let route of routes)
+// {
+//     app.use(`${route}`, import(`.routes/${route}`))
+// }
 
 app.listen(8080, () => {
     console.log("Application is listening on port 8080.");

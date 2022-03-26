@@ -1,9 +1,7 @@
-interface Session {
-    user : {
-        id: number,
-        email: string,
-        role: string
-    }
+interface SessionObject {
+    id: number,
+    email: string,
+    role: string
 }
 
-export {Session}
+export {SessionObject}

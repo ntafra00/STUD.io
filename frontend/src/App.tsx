@@ -1,10 +1,15 @@
 import React from 'react';
+import Login from "./pages/login"
+import {BrowserRouter, Route, Routes } from "react-router-dom"
+import "./index.css"
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div>
-      Hello World
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Login></Login>}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

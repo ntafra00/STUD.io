@@ -2,7 +2,9 @@ interface Solution {
     id: number,
     fileName: string,
     mark: number,
-    taskId: number
+    description: string,
+    taskId: number,
+    studentId: number
 }
 
 export { Solution }

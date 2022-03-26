@@ -2,7 +2,7 @@ interface Task {
     id: number,
     name: string,
     expirationDate: string,
-    courseId: number
+    courseId: number,
 }
 
 export { Task }

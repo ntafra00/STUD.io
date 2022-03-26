@@ -1,39 +1,60 @@
 import { Router, Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt"
 import { getUser, createUser } from "../db/users";
-import { Session } from "../models/session";
-// import middleware from "../helpers/middleware"
+import {authMiddleware} from "../helpers/middleware"
+import { UserResult } from "../models/dbResults/user";
 
-const router: Router = Router();
+const authRouter: Router = Router();
 
-router.post('/register', async (req: Request, res: Response) => {
+authRouter.post('/create', async (req: Request, res:Response) => {
+    const salt = await bcrypt.genSalt();
+    const encryptedPassword = await bcrypt.hash(req.body.password, salt);
 
-    // 1.) provjera je li postoji korisnik s danim emailom u bazi podataka
-    // -> ako postoji, vrati bad request
-    // 2.) izvuci password iz req.body-a i enkriptiraj ga
-    // 3.) jednom kad se user kreira, postavi session objekt
+    let userData = {...req.body, password: encryptedPassword};
+    const createdUser:UserResult = await createUser(userData);
+    return res.sendStatus(200);
+})
 
-    let userExists: boolean = await getUser(req.body.email);
-    if(userExists)
-    {
+
+authRouter.post('/login', async (req: Request, res: Response) => {
+
+    const existingUser: UserResult = await getUser(req.body.email);
+
+    if(!existingUser)
         return res.status(400).send({
             "message": "Invalid data"
         })
-    }
 
-    const salt = await bcrypt.genSalt();
-    const encryptedPassword = await bcrypt.hash(req.body.password, salt);
-    const userData = {...req.body, password: encryptedPassword};
+    let passwordCheck = await bcrypt.compare(req.body.password, existingUser.password);
 
-    let insertionResult = await createUser(userData);
+    if(passwordCheck)
+    {
+        req.session.user = {id: existingUser.id, email: existingUser.email, role: existingUser.role};
+        return res.status(200).send({
+            "message": "Success",
+            "data": {
+                "id": existingUser.id,
+                "fullName": existingUser.full_name,
+                "email": existingUser.email,
+                "role": existingUser.role
+            }
+        })
+        
+    }else
+        return res.status(400).send({
+            "message": "Invalid data"
+        })
 
 })
 
-router.post('/login', async (req: Request, res: Response) => {
-    
+authRouter.get('/logout', authMiddleware, async (req: Request, res: Response) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.sendStatus(500);
+        }
+    })
+    return res.sendStatus(200);
 })
 
-// router.get('/logout', authMi , async (req: Request, res: Response, next: NextFunction))
 
-
-export {router}
+export {authRouter}
