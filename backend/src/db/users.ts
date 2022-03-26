@@ -19,4 +19,21 @@ async function deleteUser(userEmail: string) {
     return res.rowCount === 1
 }
 
+<<<<<<< HEAD
 export { createUser, deleteUser }
+=======
+async function getUser(userEmail: string){
+    const res: QueryResult = await pool.query(`
+    SELECT * FROM users WHERE email = $1`, [userEmail]);
+
+    return res.rowCount === 1;
+}
+
+// async function editUser(userEmail: string) {
+    // const res: QueryResult = await pool.query(
+        // `UPDATE users SET 
+        // `)
+// }
+
+export { createUser, deleteUser, getUser }
+>>>>>>> 07fec92 (add backend routes)

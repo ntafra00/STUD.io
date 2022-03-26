@@ -23,13 +23,16 @@ services:
       - PGDATABASE=student
       - PGPORT=5432
     volumes:
-      - /C:\Users\Nikola\Desktop\faks\zavrsni\backend:/app
+      - ./backend:/app
       - /app/node_modules
   frontend:
     container_name: fe
     build: "./frontend"
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
     stdin_open: true
