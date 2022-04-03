@@ -1,5 +1,4 @@
 import styled from "@emotion/styled"
-import { Typography } from "@mui/material";
 
 export const FormWrapper = styled.div`
     display: flex;
@@ -25,12 +24,3 @@ export const ImageContainer = styled.div`
     justify-content: end;
     align-items: center;
 `
-
-// export const StyledTypography = styled.Typography`
-//     font-family: 'Modak', cursive;
-// `
-
-// background-image: url("../../assets/drawKit/1 SCENE.svg");
-    // background-repeat: no-repeat;
-    // background-position: center;
-    // background-size: cover;

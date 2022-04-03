@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt"
-import { getUser, createUser } from "../db/users";
+import { getUser, createUser } from "../db/db";
 import {authMiddleware} from "../helpers/middleware"
 import { UserResult } from "../models/dbResults/user";
 

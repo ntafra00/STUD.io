@@ -1,5 +1,4 @@
 interface Solution {
-    id: number,
     fileName: string,
     mark: number,
     description: string,

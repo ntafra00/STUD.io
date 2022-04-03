@@ -1,6 +1,11 @@
 import { Pool, QueryResult } from "pg";
 import { User } from "../models/inputs/user";
-import { Course } from "../models/inputs/course";
+import { Course } from "../models/inputs/course/course";
+import { Solution } from "../models/inputs/solution/solution";
+import { Task } from "../models/inputs/task/task";
+import { updatedCourse } from "../models/inputs/course/updateCourse";
+import { updatedTask } from "../models/inputs/task/updateTask";
+import { checkSolution } from "../models/inputs/solution/checkSolution";
 
 const pool = new Pool();
 
@@ -46,6 +51,7 @@ async function createTables() {
         )`);
 }
 
+// user queries 
 
 async function createUser(userData: User) {
     const res: QueryResult = await pool.query(
@@ -77,9 +83,21 @@ async function getUsers(role: string){
     return res.rowCount ? res.rows : null;
 }
 
+// course queries
+
+async function getCourse (courseName: string) {
+    const res: QueryResult = await pool.query(`SELECT * FROM course WHERE name = $1`, [courseName])
+    return res.rowCount ? res.rows[0] : null;
+}
+
+async function  getCourseById (courseId: number) {
+    const res: QueryResult = await pool.query(`SELECT * FROM course WHERE id = $1`, [courseId]);
+    return res.rowCount ? res.rows[0] : null;
+}
+
 async function createCourse (courseData: Course){
-    const res: QueryResult = await pool.query(`INSERT INTO course (name, professor_id) VALUES ($1, $2)`, [courseData.name, courseData.professorId])
-    return res.rows[0];
+    const res: QueryResult = await pool.query(`INSERT INTO course (name, professor_id) VALUES ($1, $2) RETURNING *`, [courseData.name, courseData.professorId])
+    return res.rowCount ? res.rows[0] : null;
 }   
 
 async function deleteCourse (courseId: number){
@@ -87,8 +105,8 @@ async function deleteCourse (courseId: number){
     return res.rowCount === 1;
 }
 
-async function updateCourse (courseName: string){
-    const res: QueryResult = await pool.query(`UPDATE course SET name = $1`, [courseName]);
+async function updateCourse (courseData: updatedCourse){
+    const res: QueryResult = await pool.query(`UPDATE course SET name = $1 WHERE id = $2`, [courseData.name, courseData.id]);
     return res.rowCount === 1;
 }
 
@@ -110,10 +128,79 @@ async function getProfessorCourses (professorId: number) {
 
 async function getStudentCourses (studentId: number) {
     const res: QueryResult = await pool.query(
-        `SELECT * FROM courses AS co 
+        `SELECT id, name FROM courses AS co 
         INNER join student_course AS sco ON co.id = sco.course_id 
         WHERE sco.student_id = $1`, [studentId]);
     return res.rowCount ? res.rows : null;
 }
 
-export { createTables, getUser, deleteUser, createUser, createCourse, deleteCourse, updateCourse, getProfessorCourses, getStudentCourses, getUsers}
+// solution queries
+
+async function createSolution (solution: Solution) {
+    const res: QueryResult = await pool.query(
+        `INSERT INTO solution (file_name, mark, description, task_id, student_id) VALUES ($1, $2, $3, $4, $5) 
+        RETURNING *`, [solution.fileName, solution.mark, solution.description, solution.taskId, solution.studentId])
+
+    return res.rowCount ? res.rows[0] : null;
+}
+
+async function deleteSolution (solutionId: number) {
+    const res: QueryResult = await pool.query(
+        `DELETE FROM solution WHERE id = $1`, [solutionId]);
+    return res.rowCount === 1;
+}
+
+async function getSolution (solutionData: checkSolution) {
+    const res: QueryResult = await pool.query(
+        `SELECT * FROM solution WHERE task_id = $1 AND student_id = $2`, [solutionData.taskId, solutionData.studentId]);
+
+    return res.rowCount ? res.rows : null;
+}
+
+async function getSolutionById (solutionId: number) {
+    const res: QueryResult = await pool.query(
+        `SELECT * FROM solution WHERE id = $1`, [solutionId]);
+    
+    return res.rowCount ? res.rows[0] : null;
+}
+
+// task queries
+
+async function createTask (task: Task) {
+    const res: QueryResult = await pool.query(
+        `INSERT INTO task (name, expiration_date, course_id) VALUES ($1, $2, $3) RETURNING *`, [task.name, task.expirationDate, task.courseId]);
+    return res.rowCount ? res.rows[0] : null;    
+}
+
+async function deleteTask (taskId: number) {
+    const res: QueryResult = await pool.query(
+        `DELETE FROM task WHERE id = $1 RETURNING *`, [taskId]);
+    return res.rowCount === 1;
+}
+
+async function updateTask (task: updatedTask) {
+    const res: QueryResult = await pool.query(
+        `UPDATE task SET name = $1, expiration_date = $2 WHERE id = $3`, [task.name, task.expirationDate, task.id]);
+    return res.rowCount === 1;
+}
+
+async function getTasks (courseId: number) {
+    const res: QueryResult = await pool.query(
+        `SELECT * FROM task WHERE course_id = $1`, [courseId]);
+    return res.rowCount ? res.rows : null;
+}
+
+async function getTask (taskName: string) {
+    const res: QueryResult = await pool.query(
+        `SELECT * FROM task WHERE name = $1`, [taskName]);
+    return res.rowCount ? res.rows[0] : null;
+}
+
+async function getTaskById (taskId: number) {
+    const res: QueryResult = await pool.query(
+        `SELECT * FROM task WHERE id = $1`, [taskId]);
+
+    return res.rowCount ? res.rows[0] : null;
+}
+
+export { createTables, getUser, deleteUser, createUser, createCourse, deleteCourse, updateCourse, getProfessorCourses, getStudentCourses, getUsers, createSolution, getCourse, deleteSolution, addStudentToCourse, createTask, deleteTask, getTasks, getCourseById, getTask, getTaskById , updateTask, getSolution, getSolutionById}

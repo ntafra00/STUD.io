@@ -2,9 +2,9 @@ import { Router, Response, Request, NextFunction } from "express";
 import { deleteUser, getUsers } from "../db/db";
 import { authMiddleware } from "../helpers/middleware";
 
-const router = Router();
+const studentRouter = Router();
 
-router.get("/", authMiddleware, async (req:Request, res: Response) => {
+studentRouter.get("/", authMiddleware, async (req:Request, res: Response) => {
     const students = await getUsers("student")
 
     if(!students)
@@ -18,11 +18,11 @@ router.get("/", authMiddleware, async (req:Request, res: Response) => {
     })
 })
 
-router.post("/", authMiddleware,  async (req: Request, res: Response) => {
+studentRouter.post("/", authMiddleware,  async (req: Request, res: Response) => {
     
 })
 
-router.delete("/id", authMiddleware, async (req: Request, res: Response) => {
+studentRouter.delete("/id", authMiddleware, async (req: Request, res: Response) => {
     const isDeleted = await deleteUser(req.body.email);
 
     if(isDeleted)
@@ -31,9 +31,9 @@ router.delete("/id", authMiddleware, async (req: Request, res: Response) => {
         })
 })
 
-router.put("/id", authMiddleware, async (req: Request, res: Response) => {
+studentRouter.put("/id", authMiddleware, async (req: Request, res: Response) => {
     const {id}  = req.params;
 })
 
 
-export {router};
+export {studentRouter};
