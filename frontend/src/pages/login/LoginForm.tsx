@@ -1,16 +1,15 @@
 import React from "react";
-import { useForm,} from "react-hook-form";
+import { useForm} from "react-hook-form";
 import loginValidation from "./validationSchema";
 import {yupResolver} from "@hookform/resolvers/yup"
 import Login from "../../inputs/login";
-import { TextField, Paper, Button, Typography, LinearProgress } from "@mui/material";
-import { Box, width } from "@mui/system";
+import { TextField, Button, LinearProgress } from "@mui/material";
+import { Box } from "@mui/system";
 import API from "../../utils/api/api"
 import {useNavigate } from "react-router-dom";
-import LoginIcon from '@mui/icons-material/Login';
 
 const LoginForm:React.FC = () => {
-
+  
     const navigate = useNavigate();
     const {register, handleSubmit, setError, reset, formState } = useForm<Login>({
         mode: "onSubmit",
@@ -28,7 +27,7 @@ const LoginForm:React.FC = () => {
         {
           document.getElementById("linearProgress")!.style.visibility = "visible"
           setTimeout(() => {
-            navigate("/home");
+            navigate("/dashboard");
             reset();
           }, 2000)
         }

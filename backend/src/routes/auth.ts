@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response   } from "express";
 import bcrypt from "bcrypt"
 import { getUser, createUser } from "../db/db";
 import {authMiddleware} from "../helpers/middleware"
@@ -54,6 +54,13 @@ authRouter.get('/logout', authMiddleware, async (req: Request, res: Response) =>
         }
     })
     return res.sendStatus(200);
+})
+
+authRouter.get("/", authMiddleware, async (req: Request, res: Response) => {
+    res.status(200).send({
+        "message": "Success",
+        "data": req.session.user
+    })
 })
 
 

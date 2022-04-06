@@ -11,7 +11,7 @@ const Login:React.FC = () => {
     return (
         <MainWrapper>
             <ImageContainer>
-                <img src={image} width="100%" height="90%"></img>
+                <img src={image} alt="People chilling" width="100%" height="90%"></img>
             </ImageContainer>
             <FormWrapper>
                 <Box sx={{width: "50%", height: "40%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginLeft: "100px"}}>
