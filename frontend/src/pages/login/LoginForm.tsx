@@ -6,10 +6,13 @@ import Login from "../../inputs/login";
 import { TextField, Button, LinearProgress } from "@mui/material";
 import { Box } from "@mui/system";
 import API from "../../utils/api/api"
-import {useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom"
+import { useContext } from "react";
+import {UserContext} from "../../context/contexts/userContext"
 
 const LoginForm:React.FC = () => {
   
+    const {actions} = useContext(UserContext)
     const navigate = useNavigate();
     const {register, handleSubmit, setError, reset, formState } = useForm<Login>({
         mode: "onSubmit",
@@ -25,6 +28,7 @@ const LoginForm:React.FC = () => {
         })
         if(serverResponse.status === 200)
         {
+          console.log(serverResponse.data.data);
           document.getElementById("linearProgress")!.style.visibility = "visible"
           setTimeout(() => {
             navigate("/dashboard");

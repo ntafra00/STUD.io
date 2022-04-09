@@ -29,7 +29,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 
     if(passwordCheck)
     {
-        req.session.user = {id: existingUser.id, email: existingUser.email, role: existingUser.role};
+        req.session.user = {id: existingUser.id, email: existingUser.email, role: existingUser.role, fullName: existingUser.full_name};
         return res.status(200).send({
             "message": "Success",
             "data": {

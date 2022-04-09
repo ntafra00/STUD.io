@@ -3,7 +3,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SchoolIcon from '@mui/icons-material/School';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import {List, ListItem, ListItemIcon, ListItemText} from "@mui/material"
+import {List, ListItem, ListItemIcon, ListItemText, IconButton} from "@mui/material"
 import { useLocation, useNavigate } from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import API from "../../utils/api/api";
@@ -64,9 +64,9 @@ const ProfessorList: React.FC = () => {
                     button
                     key={item.text} 
                     onClick={() => {handleClick(item)}}
-                    style={location.pathname === item.path ? {backgroundColor: "#f4f4f4"}: {backgroundColor: "white"}}
+                    style={location.pathname === item.path ? {backgroundColor: "#DBE4EE"}: {backgroundColor: "white"}}
                     >
-                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemIcon><IconButton>{item.icon}</IconButton></ListItemIcon>
                         <ListItemText primary={item.text}/>
                     </ListItem>
                 )

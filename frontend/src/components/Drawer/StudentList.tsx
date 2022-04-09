@@ -3,7 +3,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import SchoolIcon from '@mui/icons-material/School';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { SsidChartRounded } from "@mui/icons-material";
-import {List, ListItem, ListItemIcon, ListItemText} from "@mui/material"
+import {List, ListItem, ListItemIcon, ListItemText, IconButton} from "@mui/material"
 import { useLocation, useNavigate } from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
 import API from "../../utils/api/api";
@@ -31,7 +31,7 @@ const StudentList: React.FC = () => {
         {
             text: "Tasks",
             icon: <AssignmentIcon color="primary" fontSize="large"></AssignmentIcon>,
-            path: "/reports"
+            path: "/tasks"
         },
         {
             text: "Log out",
@@ -43,7 +43,7 @@ const StudentList: React.FC = () => {
         try {
             let response = await API.get("/auth/logout");
             if(response.status === 200)
-                navigate("");
+                window.location.href = "http://localhost:3000"
         } catch (error) {
             return;
         }
@@ -62,11 +62,11 @@ const StudentList: React.FC = () => {
                 return (
                     <ListItem  
                     button
-                    key={item.text} 
                     onClick={() => {handleClick(item)}}
-                    style={location.pathname === item.path ? {backgroundColor: "#f4f4f4"}: {backgroundColor: "white"}}
+                    key={item.text} 
+                    style={location.pathname === item.path ? {backgroundColor: "#DBE4EE"}: {backgroundColor: "white"}}
                     >
-                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemIcon><IconButton>{item.icon}</IconButton></ListItemIcon>
                         <ListItemText primary={item.text}/>
                     </ListItem>
                 )

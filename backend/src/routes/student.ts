@@ -1,6 +1,7 @@
 import { Router, Response, Request, NextFunction } from "express";
-import { deleteUser, getUsers } from "../db/db";
+import { createUser, deleteUser, getUser, getUsers } from "../db/db";
 import { authMiddleware } from "../helpers/middleware";
+import bcrypt from "bcrypt"
 
 const studentRouter = Router();
 
@@ -19,21 +20,43 @@ studentRouter.get("/", authMiddleware, async (req:Request, res: Response) => {
 })
 
 studentRouter.post("/", authMiddleware,  async (req: Request, res: Response) => {
+    const {email, password} = req.body;
+    const studentExists = await getUser(email);
     
-})
-
-studentRouter.delete("/id", authMiddleware, async (req: Request, res: Response) => {
-    const isDeleted = await deleteUser(req.body.email);
-
-    if(isDeleted)
-        return res.status(200).send({
-            "message": "User successfully deleted"
+    if(studentExists)
+        return res.status(400).send({
+            "message": "Student with that email already exists"
         })
+
+    const salt = await bcrypt.genSalt();
+    let hashedPassword = await bcrypt.hash(password, salt);
+
+    const insertedStudent = await createUser({...req.body, password: hashedPassword, role: "student"})
+
+    if(!insertedStudent)
+        return res.status(400).send({
+            "message": "Student is not inserted"
+        })
+    
+    res.status(200).send({
+        "message": "Student succesfully inserted",
+        "data": insertedStudent
+    })
 })
 
-studentRouter.put("/id", authMiddleware, async (req: Request, res: Response) => {
-    const {id}  = req.params;
-})
+studentRouter.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
+    const {id} = req.params;
+    console.log(id);
+    const isDeleted = await deleteUser(Number(id));
 
+    if(!isDeleted)
+        return res.status(400).send({
+            "messsage": "User is not deleted"
+        })
+
+    res.status(200).send({
+        "message": "User succesfully deleted"
+    })
+})
 
 export {studentRouter};

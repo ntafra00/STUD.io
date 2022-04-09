@@ -9,7 +9,7 @@ export const TableWrapper = styled.div`
 
 export const StyledDiv = styled.div`
     display: flex;
-    margin: 0 0 0 100px;
+    margin: 0 0 100px 100px;
     width: 100%;
     justifyContent: space-evenly;
 `

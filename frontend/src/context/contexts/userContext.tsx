@@ -1,22 +1,13 @@
-import React, {createContext, ReactChild, useReducer} from "react"
+import React, {createContext, useState} from "react"
 import User from "../../models/user";
-import {userReducer} from "../reducers/userReducer"
 import API from "../../utils/api/api"
-import { REMOVE_USER, SET_USER } from "../actions/userActions";
 
 interface IUserContext {
-    state: {
-        user: User;
-    } | null
+    user: User | null
     actions: {
-        setUser: Function;
         removeUser: Function;
+        getUser: Function;
     } | null
-    dispatch: Function
-}
-
-const initialState = {
-    user: null,
 }
 
 interface IProviderProps {
@@ -24,27 +15,35 @@ interface IProviderProps {
 }
 
 export const UserContext = createContext<IUserContext>({
-    state: null,
+    user: null,
     actions: null,
-    dispatch: () => null,
 })
 
 
-const UserProvider = (children: IProviderProps) => {
-    const [state, dispatch] = useReducer(userReducer, initialState)
+const UserProvider: React.FC<IProviderProps> = ({children}) => {
+    const [state, setState] = useState(null);
 
-    const setUser = async () => {
-        const response = await API.get("/auth");
-        console.log(response.data);
-        dispatch({type: SET_USER, payload: response.data})
+    const getUser = async () => {
+        try {
+            let response = await API.get("/auth");
+            if(response.status === 200)
+            {
+                setState({...response.data.data});
+            }  
+        } catch (error) {
+            console.log(error);
+            return;
+        }
     }
 
     const removeUser = () => {
-        dispatch({type: REMOVE_USER})
+        const removeUser = {user: null}
+        setState(null)
     }
+    
 
     return (
-        <UserContext.Provider value={{state, dispatch, actions: {setUser, removeUser}}}>
+        <UserContext.Provider value={{user: state, actions: {getUser, removeUser}}}>
             {children}
         </UserContext.Provider>
     )

@@ -1,21 +1,25 @@
-import React from "react"
+import React, {useState} from "react"
 import {StyledDiv} from "./index.styled"
-import { Select, Typography } from "@mui/material"
+import { Select, Typography, Button } from "@mui/material"
 import { Box } from "@mui/system"
-import { IconButton } from "@mui/material"
-import AddIcon from '@mui/icons-material/Add';
 
-const Options: React.FC = () => {
+
+interface IProps {
+    dialogState: boolean,
+    setDialogState: React.Dispatch<React.SetStateAction<boolean>>
+  }
+
+const Options: React.FC<IProps> = ({dialogState, setDialogState}) => {
+
+    
+
     return (
-        <StyledDiv>
-            <Box sx={{width: "400px", display: "flex", justifyContent: "space-between"}}>
-                <Typography>Select course</Typography>
-                <Select></Select>
-            </Box>
-            <IconButton>
-                <AddIcon></AddIcon>
-            </IconButton>
-        </StyledDiv>
+        <>
+            <StyledDiv>
+                <Button variant="outlined" onClick={() => {setDialogState(true)}}>Add student</Button>
+            </StyledDiv>
+            
+        </>
     )
 }
 

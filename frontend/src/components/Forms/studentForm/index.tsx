@@ -1,19 +1,22 @@
-import React from "react"
+import React, {useState} from "react"
 import { useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup"
 import studentValidation from "./validationSchema";
 import Student from "../../../inputs/student";
 import { TextField, Button } from "@mui/material";
-import {FieldWrapper, ButtonWrapper} from "./index.styled"
+import {FieldWrapper, ButtonWrapper} from "../index.styled"
 import API from "../../../utils/api/api"
+import Snackbar from '@mui/material/Snackbar';
 
 
 interface IProps {
-    handleClickOpen : () => void;
-    handleClickClose: () => void;
-}
+    dialogState: boolean,
+    setDialogState: React.Dispatch<React.SetStateAction<boolean>>
+  }
 
-const StudentForm: React.FC<IProps> = ({handleClickClose, handleClickOpen}) => {
+const StudentForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
+
+    const [open, setOpen] = useState<boolean>(false);
 
     const {register, handleSubmit, setError, reset, formState } = useForm<Student>({
         mode: "onSubmit",
@@ -23,13 +26,21 @@ const StudentForm: React.FC<IProps> = ({handleClickClose, handleClickOpen}) => {
 
     const onSubmit = async (data: Student) => {
         try {
-            const response = await API.post("/students")
+            const response = await API.post("/student", {
+              email: data.email,
+              fullName: data.fullName,
+              password: data.password
+            });
+            if(response.status === 200)
+              setDialogState(false);
+              setOpen(true);
         } catch (error) {
-            
+            console.log(error); 
         }
     }
 
     return (
+      <>
         <form onSubmit={handleSubmit(onSubmit)}>
             <FieldWrapper>
                 <TextField
@@ -56,13 +67,16 @@ const StudentForm: React.FC<IProps> = ({handleClickClose, handleClickOpen}) => {
                     variant="standard"
                     label="Password*"
                     type="text"
+                    helperText={formState.errors.password?.message}
                 />
             </FieldWrapper>
             <ButtonWrapper>
-                <Button onClick={handleClickClose}>Close</Button>
+                <Button onClick={() => {setDialogState(false)}}>Close</Button>
                 <Button type="submit">Add</Button>
             </ButtonWrapper>
         </form>
+        <Snackbar open={open} autoHideDuration={3000} message="Student added"></Snackbar>
+      </>
     )
 }
 

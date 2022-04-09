@@ -56,15 +56,15 @@ async function createTables() {
 async function createUser(userData: User) {
     const res: QueryResult = await pool.query(
         `INSERT INTO users (full_name, email, password, role)
-        VALUES ($1, $2, $3, $4)`
+        VALUES ($1, $2, $3, $4) RETURNING *`
         , [userData.fullName, userData.email, userData.password, userData.role])
 
-    return res.rows[0]
+    return res.rowCount ? res.rows[0] : null; 
 }
 
-async function deleteUser(userEmail: string) {
+async function deleteUser(userId: number) {
     const res: QueryResult = await pool.query(`
-    DELETE FROM users WHERE email = $1`, [userEmail]);
+    DELETE FROM users WHERE id = $1`, [userId]);
 
     return res.rowCount === 1
 }
