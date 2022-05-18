@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Dialog, DialogContent, DialogContentText, DialogTitle} from "@mui/material"
+import {Dialog, DialogContent, DialogContentText, DialogTitle} from "@mui/material"
 import StudentForm from '../Forms/studentForm';
 
 interface IProps {

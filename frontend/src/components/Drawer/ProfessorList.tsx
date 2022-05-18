@@ -19,11 +19,6 @@ const ProfessorList: React.FC = () => {
             path: "/dashboard"
         },
         {
-            text: "Courses",
-            icon: <SchoolIcon color="primary" fontSize="large"></SchoolIcon>,
-            path: "/courses"
-        },
-        {
             text: "Reports",
             icon: <AssignmentIcon color="primary" fontSize="large"></AssignmentIcon>,
             path: "/reports"
@@ -43,7 +38,7 @@ const ProfessorList: React.FC = () => {
         try {
             let response = await API.get("/auth/logout");
             if(response.status === 200)
-                navigate("");
+                window.location.href = "http://localhost:3000"
         } catch (error) {
             return;
         }

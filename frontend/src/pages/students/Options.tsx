@@ -11,12 +11,10 @@ interface IProps {
 
 const Options: React.FC<IProps> = ({dialogState, setDialogState}) => {
 
-    
-
     return (
         <>
             <StyledDiv>
-                <Button variant="outlined" onClick={() => {setDialogState(true)}}>Add student</Button>
+                <Button variant="outlined" onClick={() => setTimeout(() => setDialogState(true), 500)}>Add student</Button>
             </StyledDiv>
             
         </>

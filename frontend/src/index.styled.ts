@@ -5,7 +5,7 @@ export const StyledContainer = styled.div`
 `
 
 export const ContentWrapper = styled.div`
-    width: calc(100% - 350px);
+    width: calc(100% - 300px);
     height: 100vh;
     display: flex;
     flex-direction: column;

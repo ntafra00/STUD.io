@@ -5,7 +5,12 @@ import { Box} from "@mui/system"
 import { UserContext } from "../../context/contexts/userContext";
 import CircularProgress from '@mui/material/CircularProgress';
 
-const UserInfo: React.FC = () => {
+interface IProps {
+    dialogState: boolean,
+    setDialogState: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const UserInfo: React.FC<IProps> = ({dialogState, setDialogState}) => {
 
     const {user,actions} = useContext(UserContext)
 
@@ -22,7 +27,7 @@ const UserInfo: React.FC = () => {
             :
             <Avatar sx={{bgcolor: "#1976d2", marginRight: "5px"}}>{getUserInitials(user.fullName)}</Avatar>
             }
-            <IconButton style={{marginRight: "10px"}}><SettingsIcon fontSize="large"></SettingsIcon></IconButton>
+            <IconButton style={{marginRight: "10px"}} onClick={() => {setDialogState(true)}}><SettingsIcon fontSize="large"></SettingsIcon></IconButton>
         </Box>
     )
 }

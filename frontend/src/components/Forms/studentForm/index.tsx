@@ -1,13 +1,11 @@
-import React, {useState} from "react"
+import React, {useContext, useEffect} from "react"
 import { useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup"
 import studentValidation from "./validationSchema";
 import Student from "../../../inputs/student";
 import { TextField, Button } from "@mui/material";
 import {FieldWrapper, ButtonWrapper} from "../index.styled"
-import API from "../../../utils/api/api"
-import Snackbar from '@mui/material/Snackbar';
-
+import {StudentsContext} from "../../../context/contexts/studentContext"
 
 interface IProps {
     dialogState: boolean,
@@ -16,27 +14,41 @@ interface IProps {
 
 const StudentForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
 
-    const [open, setOpen] = useState<boolean>(false);
-
-    const {register, handleSubmit, setError, reset, formState } = useForm<Student>({
+    const {register, handleSubmit, formState, setError, setValue } = useForm<Student>({
         mode: "onSubmit",
         resolver: yupResolver(studentValidation),
         shouldFocusError: true
     });
 
-    const onSubmit = async (data: Student) => {
-        try {
-            const response = await API.post("/student", {
-              email: data.email,
-              fullName: data.fullName,
-              password: data.password
-            });
-            if(response.status === 200)
-              setDialogState(false);
-              setOpen(true);
-        } catch (error) {
-            console.log(error); 
+    const {state, actions} = useContext(StudentsContext)
+
+    useEffect(() => {
+        if(state.selectedStudent !== null)
+        {
+            setValue("email", state.selectedStudent.email);
+            setValue("fullName", state.selectedStudent.full_name);
         }
+    }, [state.selectedStudent])
+
+    const onSubmit = async (data: Student) => {
+        if(state.selectedStudent === null)
+        {
+            let error = await actions.addStudent(data);
+            if(error)
+            {
+                setError("email", {message: "Email already in use"})
+                return;
+            }
+        }else{
+            let error = await actions.editStudent(data);
+            if(error)
+            {
+                setError("email", {message: "Email already in use"})
+                return;
+            }
+        }
+        
+        setDialogState(false);
     }
 
     return (
@@ -58,59 +70,17 @@ const StudentForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
                     variant="standard"
                     label="Email*"
                     type="email"
-                />
-            </FieldWrapper>
-            <FieldWrapper>
-                <TextField
-                    {...register("password")}
-                    fullWidth
-                    variant="standard"
-                    label="Password*"
-                    type="text"
-                    helperText={formState.errors.password?.message}
+                    error={!!formState.errors.email?.message}
+                    helperText={formState.errors.email?.message}
                 />
             </FieldWrapper>
             <ButtonWrapper>
                 <Button onClick={() => {setDialogState(false)}}>Close</Button>
-                <Button type="submit">Add</Button>
+                {state.selectedStudent ? <Button type="submit">Edit</Button> :<Button type="submit">Add</Button>}
             </ButtonWrapper>
         </form>
-        <Snackbar open={open} autoHideDuration={3000} message="Student added"></Snackbar>
       </>
     )
 }
 
 export default StudentForm;
-
-{/* <form onSubmit={handleSubmit(onSubmit)}>
-          <Box sx={{width: "400px", height: "170px"}}>
-              <Box sx={{marginBottom: "15px", marginTop: "3px"}}>
-                <TextField
-                  {...register("email")}
-                  fullWidth
-                  variant="outlined"
-                  label="Email*"
-                  type="email"
-                  error={!!formState.errors.email?.message}
-                  helperText={formState.errors.email?.message !== "Invalid credentials" && formState.errors.email?.message}
-                />
-              </Box>
-              <Box sx={{marginBottom: "10px", marginTop: "5px"}}>
-                <TextField
-                  {...register("password")}
-                  fullWidth
-                  variant="outlined"
-                  label="Password*"
-                  type="password"
-                  error={!!formState.errors.password?.message}
-                  helperText={formState.errors.password?.message === "Invalid credentials" ? "Invalid credentials" : formState.errors.password?.message}
-                />
-              </Box>
-              <Box sx={{width: "100%", display: "flex", justifyContent: "end"}}>
-                <Button style={{width: "30%"}} type="submit" variant="outlined">LOG IN</Button> 
-              </Box>
-              <Box sx={{width: "100%", marginTop: "10px"}}>
-                <LinearProgress id="linearProgress" color="primary" style={{visibility: "hidden"}}></LinearProgress>
-              </Box>
-            </Box>
-        </form> */}

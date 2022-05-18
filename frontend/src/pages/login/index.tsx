@@ -6,8 +6,8 @@ import LoginForm from "./LoginForm";
 import {FormWrapper, MainWrapper, ImageContainer} from "./index.styled"
 import image from "../../assets/drawKit/pictureSeven.svg"
 
-
 const Login:React.FC = () => {
+
     return (
         <MainWrapper>
             <ImageContainer>

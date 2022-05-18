@@ -1,6 +1,6 @@
 import React from "react"
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import SchoolIcon from '@mui/icons-material/School';
+import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { SsidChartRounded } from "@mui/icons-material";
 import {List, ListItem, ListItemIcon, ListItemText, IconButton} from "@mui/material"
@@ -19,9 +19,9 @@ const StudentList: React.FC = () => {
             path: "/dashboard"
         },
         {
-            text: "Courses",
-            icon: <SchoolIcon color="primary" fontSize="large"></SchoolIcon>,
-            path: "/courses"
+            text: "Solutions",
+            icon: <EmojiObjectsIcon color="primary" fontSize="large"></EmojiObjectsIcon>,
+            path: "/solutions"
         },
         {
             text: "Progress",

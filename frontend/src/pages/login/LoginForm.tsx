@@ -12,7 +12,7 @@ import {UserContext} from "../../context/contexts/userContext"
 
 const LoginForm:React.FC = () => {
   
-    const {actions} = useContext(UserContext)
+    const userContext = useContext(UserContext)
     const navigate = useNavigate();
     const {register, handleSubmit, setError, reset, formState } = useForm<Login>({
         mode: "onSubmit",
@@ -28,7 +28,7 @@ const LoginForm:React.FC = () => {
         })
         if(serverResponse.status === 200)
         {
-          console.log(serverResponse.data.data);
+          await userContext.actions.setUser(serverResponse.data.data);
           document.getElementById("linearProgress")!.style.visibility = "visible"
           setTimeout(() => {
             navigate("/dashboard");

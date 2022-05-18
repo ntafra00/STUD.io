@@ -6,7 +6,10 @@ import Courses from './pages/courses';
 import Reports from './pages/reports';
 import Tasks from "./pages/tasks"
 import Progress from './pages/progress';
+import Solutions from './pages/solutions';
 import UserProvider from './context/contexts/userContext';
+import StudentsProvider from './context/contexts/studentContext';
+import DashboardProvider from './context/contexts/dashboardContext';
 import {BrowserRouter, Route, Routes } from "react-router-dom"
 import "./index.css"
 // import { UserContext } from './context/contexts/userContext';
@@ -16,17 +19,21 @@ const App: React.FC = () => {
 
   return (
       <UserProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path='/' element={<Login></Login>}></Route>
-            <Route path='/dashboard' element={<Dashboard></Dashboard>}></Route>
-            <Route path='/students' element={<Students></Students>}></Route>
-            <Route path='/courses' element={<Courses></Courses>}></Route>
-            <Route path ='/reports' element={<Reports></Reports>}></Route>
-            <Route path='/progress' element={<Progress></Progress>}></Route>
-            <Route path='/tasks' element={<Tasks></Tasks>}></Route>
-          </Routes>
-        </BrowserRouter>
+        <DashboardProvider>
+          <StudentsProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/' element={<Login></Login>}></Route>
+              <Route path='/dashboard' element={<Dashboard></Dashboard>}></Route>
+              <Route path='/students' element={<Students></Students>}></Route>
+              <Route path ='/reports' element={<Reports></Reports>}></Route>
+              <Route path='/progress' element={<Progress></Progress>}></Route>
+              <Route path='/tasks' element={<Tasks></Tasks>}></Route>
+              <Route path='/solutions' element={<Solutions></Solutions>}></Route>
+            </Routes>
+          </BrowserRouter>
+          </StudentsProvider>
+        </DashboardProvider>
       </UserProvider>
   );
 }
