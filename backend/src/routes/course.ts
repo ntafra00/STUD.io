@@ -1,11 +1,22 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { createCourse, deleteCourse, getCourse, getCourseById, getStudentCourses, getProfessorCourses, updateCourse } from "../db/db";
+import { createCourse, deleteCourse, getCourse, getCourseById, getStudentCourses, getProfessorCourses, updateCourse, getUser, addStudentToCourse, getStudentCourseById, getTasks } from "../db/db";
 import CourseResult from "../models/dbResults/course";
-// import { authMiddleware } from "../helpers/middleware";
+import {CourseTasks} from "../models/dbResults/courseTasks"
+import { authMiddleware } from "../helpers/middleware";
+
+const addTasksToCourse = async (courses: CourseResult[]) => {
+     
+    for (let i = 0; i < courses.length; i++)
+    {   
+        let tasks: CourseTasks[] | null = await getTasks(courses[i].id);
+        courses[i] = {...courses[i], tasks: tasks}
+    }
+}
+
 
 const courseRouter = Router();
 
-courseRouter.post("/", async (req:Request, res:Response) => {
+courseRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
     
     const courseExists = await getCourse(req.body.name);
 
@@ -31,7 +42,7 @@ courseRouter.post("/", async (req:Request, res:Response) => {
     }
 })
 
-courseRouter.get("/", async (req: Request, res: Response) => {
+courseRouter.get("/", authMiddleware, async (req: Request, res: Response) => {
     if(req.session.user?.role === 'student')
     {
         const courses = await getStudentCourses(req.session.user.id);
@@ -43,22 +54,22 @@ courseRouter.get("/", async (req: Request, res: Response) => {
             })
         }
     }else{
-        const courses = await getProfessorCourses(req.session.user!.id);
+        const courses: CourseResult[] | null = await getProfessorCourses(req.session.user!.id);
         if(courses)
         {
+            await addTasksToCourse(courses);
             return res.status(200).send({
                 "message": "Success",
                 "data": courses
             })
-        }       
+        }
     }
-
     res.status(404).send({
         "message": "No available courses"
     })
 })
 
-courseRouter.delete("/:id", async (req: Request, res: Response) => {
+courseRouter.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
     const {id} = req.params;
     const courseExists = await getCourseById(Number(id));
 
@@ -76,7 +87,7 @@ courseRouter.delete("/:id", async (req: Request, res: Response) => {
     }
 })
 
-courseRouter.put("/:id", async (req: Request, res: Response) => {
+courseRouter.put("/:id", authMiddleware, async (req: Request, res: Response) => {
     const {id} = req.params;
     let courseExists = await getCourseById(Number(id));
 
@@ -100,6 +111,38 @@ courseRouter.put("/:id", async (req: Request, res: Response) => {
             "message": "Course not updated"
         })
     }
+})
+
+courseRouter.post("/student", authMiddleware, async (req: Request, res: Response) => {
+    const {id, email, courseId} = req.body;
+
+    let studentExists = await getUser(email);    
+    if(studentExists === null)
+        return res.status(404).send({
+            "message": "Student with given email does not exist"
+        })
+
+    let courseExists = await getCourseById(courseId);  
+    if(courseExists === null)
+        return res.status(404).send({
+            "message": "Course with that ID does not exist"
+        })    
+
+    let studentAlreadyAdded = await getStudentCourseById(Number(req.session.user?.id), courseId);
+    if(studentAlreadyAdded)
+        return res.status(400).send({
+            "message": "Student is already added to that course"
+        })
+
+    let studentAddedToCourse = await addStudentToCourse(id, courseId);
+    if(!studentAddedToCourse)
+        return res.status(400).send({
+            "message": "Student not added to course"
+        })
+
+    res.status(200).send({
+        "message": "Student succesfully added to course",
+    })  
 })
 
 export {courseRouter};

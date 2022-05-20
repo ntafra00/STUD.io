@@ -4,6 +4,7 @@ import API from "../../../utils/api/api"
 import IconButton from "@mui/material/IconButton";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Box } from "@mui/system";
+import {Button} from "@mui/material";
 
 interface IProps {
     id: number;
@@ -14,6 +15,7 @@ const FileForm: React.FC<IProps> = ({id}) => {
     const {register, handleSubmit} = useForm({
         mode: "onSubmit",
     });
+
 
     const onSubmit = async (data) => {
         const solutionData = new FormData();
@@ -33,8 +35,11 @@ const FileForm: React.FC<IProps> = ({id}) => {
     return (  
         <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                <input {...register("file")} type="file"></input>
-                <IconButton type="submit"><UploadFileIcon></UploadFileIcon></IconButton>
+                <input multiple id="raised-button-file" type="file"/>           
+                {/* <label htmlFor="raised-button-file">
+                    <Button variant="contained" component="label">Browse</Button>
+                </label>
+                <IconButton type="submit"><UploadFileIcon></UploadFileIcon></IconButton> */}
             </Box>
         </form>
     )

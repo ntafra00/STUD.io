@@ -24,8 +24,8 @@ const StudentTable: React.FC<IProps> = ({dialogState, setDialogState}) => {
   }
 
   return (
-        <TableContainer style={{width:"80%"}}>
-          <Table aria-label="simple table">
+        <TableContainer style={{height: "400px"}}>
+          <Table aria-label="sticky table" stickyHeader>
             <TableHead>
               <TableRow>
                 <TableCell >ID</TableCell>

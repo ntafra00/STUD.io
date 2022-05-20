@@ -1,40 +1,28 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useContext } from "react"
 import Heading from "../../components/Heading";
 import { StyledContainer, ContentWrapper } from "../../index.styled"
 import Drawer from "../../components/Drawer/Drawer";
-import API from "../../utils/api/api";
-import Task from "../../models/task";
-import TaskList from "./TaskList";
-import { TasksContainer}from "./index.styled"
+import { TaskContext } from "../../context/contexts/taskContext";
+import { UserContext } from "../../context/contexts/userContext";
+import StudentTasks from "./student";
+import ProfessorTasks from "./professor";
 
 const Tasks: React.FC = () => {
 
-    const [tasks, setTasks] = React.useState<Task[]>([])
+    const {state, actions} = useContext(TaskContext);
+    const userContext = useContext(UserContext)
 
     useEffect(() => {
-        const getTasks = async () => {
-            try {
-                let response = await API.get("/task/1")
-                if(response.status === 200)
-                {
-                    setTasks([...tasks, ...response.data.data])
-                }
-                    
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        getTasks();
-    }, [])
+        if(state.tasks.length === 0)
+            actions.getTasks();
+    }, [userContext.user])
 
     return (
         <StyledContainer>
             <Drawer></Drawer>
             <ContentWrapper>
                 <Heading text="Tasks"></Heading>
-                <TasksContainer>
-                    <TaskList tasks={tasks}></TaskList>
-                </TasksContainer>
+                {userContext.user.role === "student" ? <StudentTasks/> : <ProfessorTasks/>}
             </ContentWrapper>
         </StyledContainer>
     )

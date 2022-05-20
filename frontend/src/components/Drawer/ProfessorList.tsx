@@ -19,6 +19,11 @@ const ProfessorList: React.FC = () => {
             path: "/dashboard"
         },
         {
+            text: "Tasks",
+            icon: <AssignmentIcon color="primary" fontSize="large"></AssignmentIcon>,
+            path: "/tasks"
+        },
+        {
             text: "Reports",
             icon: <AssignmentIcon color="primary" fontSize="large"></AssignmentIcon>,
             path: "/reports"

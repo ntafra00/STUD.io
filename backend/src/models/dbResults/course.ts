@@ -1,7 +1,9 @@
+import {CourseTasks} from "./courseTasks"
+ 
 interface CourseResult {
     id: number,
     courseName: string,
-    professorId: number
+    tasks: CourseTasks[] | null,
 }
 
 export default CourseResult;

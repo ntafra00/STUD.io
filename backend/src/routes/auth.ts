@@ -1,6 +1,6 @@
 import { Router, Request, Response   } from "express";
 import bcrypt from "bcrypt"
-import { getUser, createUser } from "../db/db";
+import { getUser, createUser, updateUser } from "../db/db";
 import {authMiddleware} from "../helpers/middleware"
 import { UserResult } from "../models/dbResults/user";
 
@@ -63,5 +63,21 @@ authRouter.get("/", authMiddleware, async (req: Request, res: Response) => {
     })
 })
 
+authRouter.put("/", authMiddleware, async (req: Request, res: Response) => {
+    const id = req.session.user!.id;
+    const salt = await bcrypt.genSalt();
+    const encryptedPassword = await bcrypt.hash(req.body.password, salt);
+
+    let passwordChanged = await updateUser(encryptedPassword, id);
+
+    if(!passwordChanged)
+        return res.status(400).send({
+            "message": "Password not changed properly"
+        })
+
+    res.status(200).send({
+        "message": "Password changed"
+    })
+})
 
 export {authRouter}

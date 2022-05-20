@@ -5,10 +5,11 @@ import path from "path"
 import { BASE_FILE_PATH } from "../constants";
 import { createSolution, deleteSolution, getSolution, getSolutionById } from "../db/db";
 import { SolutionResult } from "../models/dbResults/solution";
+import { authMiddleware } from "../helpers/middleware";
 
 const solutionRouter: Router =  Router();
 
-solutionRouter.post("/", async (req:Request, res:Response) => {
+solutionRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
     if(!req.files){
         return res.status(400).send({
             "message": "Missing files"
@@ -44,7 +45,7 @@ solutionRouter.post("/", async (req:Request, res:Response) => {
 });
 
 
-solutionRouter.delete("/:id", async (req:Request, res:Response) => {
+solutionRouter.delete("/:id", authMiddleware, async (req:Request, res:Response) => {
     const {id} = req.params;
 
     const solutionExists: SolutionResult = await getSolutionById(Number(id));

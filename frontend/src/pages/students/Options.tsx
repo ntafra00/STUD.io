@@ -1,7 +1,6 @@
 import React, {useState} from "react"
 import {StyledDiv} from "./index.styled"
-import { Select, Typography, Button } from "@mui/material"
-import { Box } from "@mui/system"
+import { Button } from "@mui/material"
 
 
 interface IProps {

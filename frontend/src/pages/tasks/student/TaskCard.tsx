@@ -3,7 +3,7 @@ import Card from "@mui/material/Card"
 import { CardContent, FormControlLabel, TextField } from "@mui/material"
 import Typography from "@mui/material/Typography"
 import { Box } from "@mui/system";
-import FileForm from "../../components/Forms/fileForm/index"
+import FileForm from "../../../components/Forms/fileForm/index"
 
 interface IProps {
     name: string,

@@ -6,6 +6,7 @@ import { ContentWrapper, StyledContainer } from "../../index.styled";
 import AddDialog from "../../components/Dialogs/AddDialog";
 import Options from "./Options";
 import { StudentsContext } from "../../context/contexts/studentContext";
+import { TestWrapper } from "./index.styled";
 
 const Students: React.FC = () => {
 
@@ -24,8 +25,10 @@ const Students: React.FC = () => {
             <Drawer></Drawer>
             <ContentWrapper>
                 <Heading text="Students"/>
-                <Options dialogState={dialogState} setDialogState={setDialogState}></Options>
-                <StudentTable dialogState={dialogState} setDialogState={setDialogState}></StudentTable>
+                <TestWrapper>
+                    <Options dialogState={dialogState} setDialogState={setDialogState}></Options>
+                    <StudentTable dialogState={dialogState} setDialogState={setDialogState}></StudentTable>
+                </TestWrapper>
                 <AddDialog dialogState={dialogState} setDialogState={setDialogState}></AddDialog>
             </ContentWrapper>
         </StyledContainer>

@@ -1,7 +1,8 @@
 import { Router, Response, Request, NextFunction } from "express";
-import { createUser, deleteUser, getUser, getUsers } from "../db/db";
+import { addStudentToCourse, createUser, deleteUser, getUser, getUsers, updateStudent } from "../db/db";
 import { authMiddleware } from "../helpers/middleware";
 import bcrypt from "bcrypt"
+import {UserResult} from "../models/dbResults/user"
 
 const studentRouter = Router();
 
@@ -31,22 +32,27 @@ studentRouter.post("/", authMiddleware,  async (req: Request, res: Response) => 
     const salt = await bcrypt.genSalt();
     let hashedPassword = await bcrypt.hash(password, salt);
 
-    const insertedStudent = await createUser({...req.body, password: hashedPassword, role: "student"})
+    const insertedStudent: UserResult = await createUser({...req.body, password: hashedPassword, role: "student"})
 
     if(!insertedStudent)
         return res.status(400).send({
             "message": "Student is not inserted"
         })
     
+    await addStudentToCourse(insertedStudent.id, 1);
+    
     res.status(200).send({
         "message": "Student succesfully inserted",
-        "data": insertedStudent
+        "data": {
+            "id": insertedStudent.id,
+            "email": insertedStudent.email,
+            "full_name": insertedStudent.full_name
+        }
     })
 })
 
-studentRouter.delete("/:id", authMiddleware, async (req: Request, res: Response) => {
-    const {id} = req.params;
-    console.log(id);
+studentRouter.delete("/", authMiddleware, async (req: Request, res: Response) => {
+    const id = req.query.id;
     const isDeleted = await deleteUser(Number(id));
 
     if(!isDeleted)
@@ -56,6 +62,22 @@ studentRouter.delete("/:id", authMiddleware, async (req: Request, res: Response)
 
     res.status(200).send({
         "message": "User succesfully deleted"
+    })
+})
+
+studentRouter.put("/", authMiddleware, async (req: Request, res: Response) => {
+    const id = req.query.id;
+    const emailInUse = await getUser(req.body.email);
+
+    if(emailInUse)
+        return res.status(400).send({
+            "message": "User with that email already exists"
+        })
+
+    await updateStudent({email: req.body.email, fullName: req.body.fullName, id: Number(id)})
+
+    res.status(200).send({
+        "message": "Data succesfully edited"
     })
 })
 

@@ -1,17 +1,16 @@
-import React from "react"
+import React, {useContext} from "react"
 import Grid from "@mui/material/Grid";
-import Task from "../../models/task"
 import TaskCard from "./TaskCard"
-
-interface IProps {
-    tasks: Task[];
-}
+import { TaskContext } from "../../../context/contexts/taskContext";
 
 
-const TaskList: React.FC<IProps> = ({tasks}) => {
+const TaskList: React.FC = () => {
+
+    const {state, actions} = useContext(TaskContext);
+
     return (
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1}}>
-            {tasks.map((task) => {
+        <Grid container rowSpacing={2} columnSpacing={{ xs: 2}}>
+            {state.tasks.map((task) => {
                 return (
                     <Grid item key={task.id} xs={4}>
                         <TaskCard expiration_date={task.expiration_date} name={task.name} id={task.id}></TaskCard>

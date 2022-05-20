@@ -1,10 +1,13 @@
 import {Router, Request, Response} from "express";
 import { createTask, getTask, getTasks, getTaskById, updateTask, deleteTask } from "../db/db";
+import { authMiddleware } from "../helpers/middleware";
 
 const taskRouter: Router = Router();
 
 taskRouter.get("/", async (req:Request, res:Response) => {
-    const tasks = await getTasks(req.body.courseId);
+    const id = req.query.id;
+    console.log(id);
+    const tasks = await getTasks(Number(id));
 
     if(!tasks)
         return res.status(404).send({"message": "There aren't any tasks"})
@@ -12,7 +15,7 @@ taskRouter.get("/", async (req:Request, res:Response) => {
     res.status(200).send({"message": "Success", "data": tasks});
 })
 
-taskRouter.post("/", async (req:Request, res:Response) => {
+taskRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
     const checkForTask = await getTask(req.body.name);
 
     if(checkForTask)
@@ -28,8 +31,8 @@ taskRouter.post("/", async (req:Request, res:Response) => {
     })
 });
 
-taskRouter.put("/:id", async (req:Request, res: Response) => {
-    const {id} = req.params
+taskRouter.put("/", authMiddleware, async (req:Request, res: Response) => {
+    const id = req.query;
     let checkForTask = await getTaskById(Number(id));
 
     if(!checkForTask)
@@ -52,8 +55,8 @@ taskRouter.put("/:id", async (req:Request, res: Response) => {
 })
 
 
-taskRouter.delete("/:id", async (req:Request, res:Response) => {
-    const {id} = req.params
+taskRouter.delete("/", authMiddleware, async (req:Request, res:Response) => {
+    const id = req.query;
     const checkForTask = await getTaskById(Number(id));
     
     if(!checkForTask)
