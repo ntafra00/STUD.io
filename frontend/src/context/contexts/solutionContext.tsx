@@ -1,15 +1,18 @@
 import React, {createContext, useState} from "react"
 import API from "../../utils/api/api"
 import Solution from "../../models/solution"
+import MarkedSolution from "../../models/markedSolution";
 
 interface ISolutionContext {
     state: {
         solutions: Solution[] | null;
         selectedSolution: Solution  | null;
+        markedSolutions: MarkedSolution[] | null;
     } | null
     actions: {
         getSolutions: Function;
         deleteSolution: Function;
+        getMarkedSolutions: Function;
     } | null
 }
 
@@ -24,7 +27,8 @@ export const SolutionContext = createContext<ISolutionContext>({
 
 const initialValue = {
     solutions: [],
-    selectedSolution: null
+    selectedSolution: null,
+    markedSolutions: []
 }
 
 const SolutionsProvider: React.FC<IProviderProps> = ({children}) => {
@@ -57,8 +61,21 @@ const SolutionsProvider: React.FC<IProviderProps> = ({children}) => {
         }
     }
 
+    const getMarkedSolutions = async () => {
+        try {
+            let response = await API.get("/solution/progress")
+            if(response.status === 200)
+            {
+                console.log(response.data.data);
+                setState({...state, markedSolutions: [...response.data.data]})
+            }
+        } catch (error) {
+            return error;   
+        }
+    }
+
     return (
-        <SolutionContext.Provider value={{state: state, actions: {getSolutions, deleteSolution} }}>
+        <SolutionContext.Provider value={{state: state, actions: {getSolutions, deleteSolution, getMarkedSolutions} }}>
             {children}
         </SolutionContext.Provider>
     )

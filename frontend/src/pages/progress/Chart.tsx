@@ -1,46 +1,60 @@
-import React from "react"
-import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Line } from "recharts";
+import React, { useContext} from "react"
+import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line } from "recharts";
+import { SolutionContext } from "../../context/contexts/solutionContext";
+import MarkedSolution from "../../models/markedSolution";
 
-const chartData = [
-    {
-        "name": "13.05.2022.",
-        "mark": 4
-      },
-      {
-        "name": "15.05.2022.",
-        "mark": 5
-      },
-      {
-        "name": "17.05.2022.",
-        "mark": 1
-      },
-      {
-        "name": "19.05.2022.",
-        "mark": 2
-      },
-      {
-        "name": "21.05.2022.",
-        "mark": 1
-      },
-      {
-        "name": "23.05.2022.",
-        "mark": 4
-      },
-      {
-        "name": "25.05.2022.",
-        "mark": 3
-      },
-      {
-        "name": "30.05.2022.",
-        "mark": 2
-      }
-]
+interface IProps {
+    chartData: MarkedSolution[];
+}
 
-const Chart: React.FC = () => {
+// const chartData = [
+//     {
+//         "name": "13.05.2022.",
+//         "mark": 4
+//       },
+//       {
+//         "name": "15.05.2022.",
+//         "mark": 5
+//       },
+//       {
+//         "name": "17.05.2022.",
+//         "mark": 1
+//       },
+//       {
+//         "name": "19.05.2022.",
+//         "mark": 2
+//       },
+//       {
+//         "name": "21.05.2022.",
+//         "mark": 1
+//       },
+//       {
+//         "name": "23.05.2022.",
+//         "mark": 4
+//       },
+//       {
+//         "name": "25.05.2022.",
+//         "mark": 3
+//       },
+//       {
+//         "name": "30.05.2022.",
+//         "mark": 2
+//       }
+// ]
+
+const Chart: React.FC<IProps> = ({chartData}) => {
+
+    const {state} = useContext(SolutionContext);
+
     return (
-        <LineChart width={1500} height={500} data={chartData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            {/* <CartesianGrid strokeDasharray="3 3" /> */}
+      <LineChart width={1500} height={500} data={chartData.filter((data) => {
+        return {
+          "name": data.expiration_date.split("T")[0],
+          "mark": data.mark
+        }
+      })}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" style={{margin: "20"}}/>
             <YAxis dataKey="mark" domain={[0,5]} ticks={[1,2,3,4,5]}/>
             <Tooltip />
