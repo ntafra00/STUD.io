@@ -9,6 +9,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import API from "../../../utils/api/api"
+import {checkIfDateIsValid} from "../../../utils/helpers"
 
 interface IProps {
     dialogState: boolean;
@@ -24,10 +25,15 @@ const TaskForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
     });
 
     const [value, setValue] = React.useState<Date | null>(new Date());
-    const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
     const onSubmit = async (data: Task) => {
         
+        if(!checkIfDateIsValid(data.expirationDate))
+        {
+            setError("expirationDate", {message: "Invalid date input"})
+            return;
+        }
+
         let dateToString = data.expirationDate.toISOString();
         let formatedDate = dateToString.split("T");
         let date = `${formatedDate[0]} ${formatedDate[1]}`;
@@ -36,7 +42,7 @@ const TaskForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
             let response = await API.post("/task", {
                 "name": data.name,
                 "expirationDate": date,
-                "courseId": 10
+                "courseId": 1
             })
             
             if(response.status === 200)
@@ -45,7 +51,7 @@ const TaskForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
                 setDialogState(false);
             }    
         } catch (error) {
-            setError("expirationDate", {message: "Task with that name already exists"})
+            setError("name", {message: "Task with that name already exists"})
         }
     }
 
@@ -59,13 +65,15 @@ const TaskForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
                     variant="standard"
                     label="Name*"
                     type="text"
+                    error={!!formState.errors.name?.message}
+                    helperText={formState.errors.name?.message}
                 />
             </FieldWrapper>
             <div style={{margin: "30px 0 0 0"}}>
                 <LocalizationProvider dateAdapter={AdapterLuxon}>
                     <DateTimePicker
                     {...register("expirationDate")}
-                    renderInput={(props) => <TextField {...props} variant="outlined" fullWidth helperText={formState.errors.expirationDate?.message}/>}
+                    renderInput={(props) => <TextField {...props} variant="outlined" fullWidth error={!!formState.errors.expirationDate?.message} helperText={formState.errors.expirationDate?.message}/>}
                     label="Expiration date"
                     value={value}
                     onChange={(newDate) => {setValue(newDate)}}

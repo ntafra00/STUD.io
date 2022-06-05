@@ -195,6 +195,19 @@ async function getSolutionByTaskId (taskId: number) {
     return res.rowCount ? res.rows : null;
 }
 
+async function getAllSolutions (mark: string) {
+    const res: QueryResult = await pool.query(
+        `SELECT * FROM solution WHERE mark = $1`, [mark]);
+    
+    return res.rowCount ? res.rows : null;
+}
+
+async function getStudentSolutions (studentId: number) {
+    const res: QueryResult = await pool.query(
+        `SELECT * FROM solution WHERE student_id = $1`, [studentId]);
+    return res.rowCount ? res.rows : null;
+}
+
 // task queries
 
 async function createTask (task: Task) {
@@ -234,4 +247,4 @@ async function getTaskById (taskId: number) {
     return res.rowCount ? res.rows[0] : null;
 }
 
-export { createTables, getUser, deleteUser, createUser, createCourse, deleteCourse, updateCourse, getProfessorCourses, getStudentCourses, getUsers, createSolution, getCourse, deleteSolution, addStudentToCourse, createTask, deleteTask, getTasks, getCourseById, getTask, getTaskById , updateTask, getSolution, getSolutionById, getStudentCourseById, getSolutionByTaskId, updateStudent, updateUser}
+export { createTables, getUser, deleteUser, createUser, createCourse, deleteCourse, updateCourse, getProfessorCourses, getStudentCourses, getUsers, createSolution, getCourse, deleteSolution, addStudentToCourse, createTask, deleteTask, getTasks, getCourseById, getTask, getTaskById , updateTask, getSolution, getSolutionById, getStudentCourseById, getSolutionByTaskId, updateStudent, updateUser, getAllSolutions, getStudentSolutions}

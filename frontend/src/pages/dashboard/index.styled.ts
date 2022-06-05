@@ -9,3 +9,12 @@ export const ContentContainer = styled.div`
 export const ImageWrapper = styled.div`
     width: 50%;
 `
+
+export const FancyLink = styled.a`
+    text-decoration: none;
+    margin: 0 0 0 200px;
+
+    &:hover{
+        cursor: pointer;
+    }
+`

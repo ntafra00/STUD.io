@@ -3,7 +3,7 @@ import fs from "fs"
 import crypto from "crypto"
 import path from "path"
 import { BASE_FILE_PATH } from "../constants";
-import { createSolution, deleteSolution, getSolution, getSolutionById } from "../db/db";
+import { createSolution, deleteSolution, getAllSolutions, getSolution, getSolutionById, getStudentSolutions } from "../db/db";
 import { SolutionResult } from "../models/dbResults/solution";
 import { authMiddleware } from "../helpers/middleware";
 
@@ -63,5 +63,29 @@ solutionRouter.delete("/:id", authMiddleware, async (req:Request, res:Response) 
     res.status(200).send({"message": "Solution succesfully deleted"});
 })
 
+solutionRouter.get("/", authMiddleware, async (req: Request, res:Response) => {
+    const {id, role} = req.session.user!;
+
+    if(role === "student")
+    {
+        let studentSolutions = await getStudentSolutions(Number(id));
+        if(studentSolutions)
+            return res.status(200).send({
+                "message": "Success",
+                "data": studentSolutions
+            })
+    }else{
+        let professorSolutions = await getAllSolutions("Not given")
+        if(professorSolutions)
+            return res.status(200).send({
+                "message": "Success",
+                "data": professorSolutions
+            })
+    }
+
+    res.status(404).send({
+        "message": "There aren't any solutions"
+    })
+})
 
 export {solutionRouter}

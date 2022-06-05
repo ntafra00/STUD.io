@@ -18,13 +18,15 @@ const Tasks: React.FC = () => {
     }, [userContext.user])
 
     return (
+        <>
         <StyledContainer>
             <Drawer></Drawer>
             <ContentWrapper>
                 <Heading text="Tasks"></Heading>
-                {userContext.user.role === "student" ? <StudentTasks/> : <ProfessorTasks/>}
+                {userContext.user?.role === "student" ? <StudentTasks/> : <ProfessorTasks/>}
             </ContentWrapper>
         </StyledContainer>
+        </>
     )
 }
 

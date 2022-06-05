@@ -14,7 +14,7 @@ const Info: React.FC = () => {
   const {user} = React.useContext(UserContext)
 
   return (
-    <Stack sx={{ width: '50%'}} spacing={2}>
+    <Stack sx={{ width: '50%', height: '100px'}} spacing={2}>
       {state.news?.map((singleNew, index) => { 
         if(!singleNew.hasOwnProperty("mark"))
         {
@@ -26,7 +26,7 @@ const Info: React.FC = () => {
           )
         }else{ 
           if(user.role === "student")
-            return (<StudentSuccess index={index}/>)
+            return (<StudentSuccess index={index} id={singleNew.id}/>)
           else
             return (<ProfessorInfo index={index}/>)
         }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import { Typography, Paper } from "@mui/material";
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import { Box } from "@mui/system";
@@ -9,6 +9,7 @@ import image from "../../assets/drawKit/pictureSeven.svg"
 const Login:React.FC = () => {
 
     return (
+        <>
         <MainWrapper>
             <ImageContainer>
                 <img src={image} alt="People chilling" width="100%" height="90%"></img>
@@ -25,6 +26,7 @@ const Login:React.FC = () => {
                 </Box>
             </FormWrapper>
         </MainWrapper>
+        </>
     )   
 }
 

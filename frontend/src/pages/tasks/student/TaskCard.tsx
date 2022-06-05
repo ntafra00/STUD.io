@@ -1,6 +1,6 @@
 import React from "react"
 import Card from "@mui/material/Card"
-import { CardContent, FormControlLabel, TextField } from "@mui/material"
+import { CardContent, CardMedia, FormControlLabel, TextField } from "@mui/material"
 import Typography from "@mui/material/Typography"
 import { Box } from "@mui/system";
 import FileForm from "../../../components/Forms/fileForm/index"
@@ -18,8 +18,22 @@ const TaskCard: React.FC<IProps> = ({name, expiration_date, id}) => {
         return `${dateToString.split("T")[0]} ${dateToString.split("T")[1].split(".")[0]}`
     }   
 
+    const testDate = (date: Date) => {
+        let currentDate = new Date();
+        let givenDate = new Date(date);
+        if(currentDate.getTime() > givenDate.getTime())
+            return false;
+        return true;
+    }
+
     return(
-        <Card sx={{ maxWidth: 400 }}>
+        <Card sx={{ maxWidth: 450 }}>
+            <CardMedia
+            component="img"
+            height="180"
+            image="https://www.bbva.com/wp-content/uploads/2019/11/ciberseguridad-disi-datos-bbva-1024x629.jpg"
+            alt="Computer security"
+            />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                     {name}
@@ -30,7 +44,7 @@ const TaskCard: React.FC<IProps> = ({name, expiration_date, id}) => {
                     </Typography>
                 </Box>
                 <Box sx={{marginTop: "30px"}}>
-                    <FileForm id={id}></FileForm>
+                    {testDate(expiration_date) ? <FileForm id={id}></FileForm> : <Typography variant="h6">Time's up.</Typography>}
                 </Box>
             </CardContent>
         </Card>

@@ -1,8 +1,8 @@
 import React from "react"
 import PersonIcon from '@mui/icons-material/Person';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import SchoolIcon from '@mui/icons-material/School';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import TaskIcon from '@mui/icons-material/Task';
 import {List, ListItem, ListItemIcon, ListItemText, IconButton} from "@mui/material"
 import { useLocation, useNavigate } from "react-router-dom";
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -20,7 +20,7 @@ const ProfessorList: React.FC = () => {
         },
         {
             text: "Tasks",
-            icon: <AssignmentIcon color="primary" fontSize="large"></AssignmentIcon>,
+            icon: <TaskIcon color="primary" fontSize="large"></TaskIcon>,
             path: "/tasks"
         },
         {

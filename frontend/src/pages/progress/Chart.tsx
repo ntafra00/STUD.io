@@ -38,7 +38,7 @@ const chartData = [
 
 const Chart: React.FC = () => {
     return (
-        <LineChart width={1500} height={300} data={chartData}
+        <LineChart width={1500} height={500} data={chartData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             {/* <CartesianGrid strokeDasharray="3 3" /> */}
             <XAxis dataKey="name" style={{margin: "20"}}/>

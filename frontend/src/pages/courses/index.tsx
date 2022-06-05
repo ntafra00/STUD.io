@@ -10,8 +10,8 @@ import { CourseCardsWrapper } from "./index.styled";
 
 const Courses: React.FC = () => {
 
-    const [dialogState, setDialogState] = useState<boolean>(false);
     const [courses, setCourses] = useState<Course[]>([]);
+    const [dialogState, setDialogState] = useState<boolean>(false);
 
     useEffect(() => {
         const getCourses =  async () => {

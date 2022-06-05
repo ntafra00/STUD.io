@@ -20,7 +20,8 @@ export const PERMISSIONS = {
     },
     "/api/solution": {
         POST: ["student"],
-        DELETE: ["student"]
+        DELETE: ["student"],
+        GET: ["professor", "student"]
     },
     "/api/dashboard": {
         GET: ["professor", "student"]
