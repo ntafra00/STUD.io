@@ -7,52 +7,19 @@ interface IProps {
     chartData: MarkedSolution[];
 }
 
-// const chartData = [
-//     {
-//         "name": "13.05.2022.",
-//         "mark": 4
-//       },
-//       {
-//         "name": "15.05.2022.",
-//         "mark": 5
-//       },
-//       {
-//         "name": "17.05.2022.",
-//         "mark": 1
-//       },
-//       {
-//         "name": "19.05.2022.",
-//         "mark": 2
-//       },
-//       {
-//         "name": "21.05.2022.",
-//         "mark": 1
-//       },
-//       {
-//         "name": "23.05.2022.",
-//         "mark": 4
-//       },
-//       {
-//         "name": "25.05.2022.",
-//         "mark": 3
-//       },
-//       {
-//         "name": "30.05.2022.",
-//         "mark": 2
-//       }
-// ]
-
 const Chart: React.FC<IProps> = ({chartData}) => {
 
     const {state} = useContext(SolutionContext);
+    const data = chartData.map((information) => {
+      return {
+        "name": information.expiration_date.split("T")[0],
+        "mark": information.mark
+      }
+    })
+
 
     return (
-      <LineChart width={1500} height={500} data={chartData.filter((data) => {
-        return {
-          "name": data.expiration_date.split("T")[0],
-          "mark": data.mark
-        }
-      })}
+      <LineChart width={1500} height={500} data={data}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" style={{margin: "20"}}/>

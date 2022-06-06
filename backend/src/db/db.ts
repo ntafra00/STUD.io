@@ -7,6 +7,7 @@ import { updatedCourse } from "../models/inputs/course/updateCourse";
 import { updatedTask } from "../models/inputs/task/updateTask";
 import { checkSolution } from "../models/inputs/solution/checkSolution";
 import { updatedStudent } from "../models/inputs/updatedStudent";
+import { markSolution } from "../models/inputs/solution/markSolution";
 
 const pool = new Pool();
 
@@ -181,6 +182,21 @@ async function getSolution (solutionData: checkSolution) {
     return res.rowCount ? res.rows[0] : null;
 }
 
+async function markSolution (solutionData: markSolution) {
+    const res: QueryResult = await pool.query(
+        `UPDATE solution SET mark = $1, description = $2 WHERE id = $3`, [solutionData.mark, solutionData.description, solutionData.id]
+    )
+
+    return res.rowCount === 1;
+}
+
+async function setSolutionAsChecked (id: number) {
+    const res: QueryResult = await pool.query(
+        `UPDATE solution SET checked = true WHERE id = $1`, [id]);
+    
+    return res.rowCount === 1;
+}
+
 async function getSolutionById (solutionId: number) {
     const res: QueryResult = await pool.query(
         `SELECT * FROM solution WHERE id = $1`, [solutionId]);
@@ -197,7 +213,7 @@ async function getSolutionByTaskId (taskId: number) {
 
 async function getAllSolutions (mark: string) {
     const res: QueryResult = await pool.query(
-        `SELECT * FROM solution WHERE mark = $1`, [mark]);
+        `SELECT u.full_name, s.file_name, s.id, s.task_id FROM users AS u INNER JOIN solution AS s ON u.id = s.student_id WHERE s.mark = $1`, [mark]);
     
     return res.rowCount ? res.rows : null;
 }
@@ -205,6 +221,12 @@ async function getAllSolutions (mark: string) {
 async function getStudentSolutions (studentId: number) {
     const res: QueryResult = await pool.query(
         `SELECT * FROM solution WHERE student_id = $1`, [studentId]);
+    return res.rowCount ? res.rows : null;
+}
+
+async function getSolutionGraphData (studentId: number) {
+    const res: QueryResult = await pool.query(
+        `SELECT s.id, s.mark, t.expiration_date FROM solution AS s INNER JOIN task AS t ON s.task_id = t.id WHERE s.mark != 'Not given' AND s.student_id = $1`, [studentId])
     return res.rowCount ? res.rows : null;
 }
 
@@ -240,6 +262,13 @@ async function getTask (taskName: string) {
     return res.rowCount ? res.rows[0] : null;
 }
 
+async function checkForTask (taskName: string, taskId: number) {
+    const res: QueryResult = await pool.query(
+        `SELECT * FROM task WHERE name = $1 AND id != $2`, [taskName, taskId]
+    )
+    return res.rowCount ? res.rows[0] : null;
+}
+
 async function getTaskById (taskId: number) {
     const res: QueryResult = await pool.query(
         `SELECT * FROM task WHERE id = $1`, [taskId]);
@@ -247,4 +276,4 @@ async function getTaskById (taskId: number) {
     return res.rowCount ? res.rows[0] : null;
 }
 
-export { createTables, getUser, deleteUser, createUser, createCourse, deleteCourse, updateCourse, getProfessorCourses, getStudentCourses, getUsers, createSolution, getCourse, deleteSolution, addStudentToCourse, createTask, deleteTask, getTasks, getCourseById, getTask, getTaskById , updateTask, getSolution, getSolutionById, getStudentCourseById, getSolutionByTaskId, updateStudent, updateUser, getAllSolutions, getStudentSolutions}
+export { createTables, getUser, deleteUser, createUser, createCourse, deleteCourse, updateCourse, getProfessorCourses, getStudentCourses, getUsers, createSolution, getCourse, deleteSolution, addStudentToCourse, createTask, deleteTask, getTasks, getCourseById, getTask, getTaskById , updateTask, getSolution, getSolutionById, getStudentCourseById, getSolutionByTaskId, updateStudent, updateUser, getAllSolutions, getStudentSolutions, markSolution, setSolutionAsChecked, getSolutionGraphData, checkForTask}

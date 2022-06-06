@@ -89,7 +89,7 @@ dashboardRouter.get("/", authMiddleware, async (req: Request, res: Response) => 
             "message": "Success",
             "data": {
                 "unsolvedTasks": unsolvedTasks,
-                "markedSolutions": markedSolutions.filter((solution) => solution.mark !== "Not given"), 
+                "markedSolutions": markedSolutions.filter((solution) => solution.mark !== "Not given" && solution.checked !== true), 
             }
         })
     }

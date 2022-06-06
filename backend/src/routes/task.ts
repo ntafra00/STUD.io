@@ -1,18 +1,45 @@
 import {Router, Request, Response} from "express";
-import { createTask, getTask, getTasks, getTaskById, updateTask, deleteTask } from "../db/db";
+import { createTask, getTask, getTasks, getTaskById, updateTask, deleteTask, checkForTask, getSolution } from "../db/db";
 import { authMiddleware } from "../helpers/middleware";
+import { CourseTasks } from "../models/dbResults/courseTasks";
+import { SolutionResult } from "../models/dbResults/solution";
+
+const findSolutions = async (tasks: CourseTasks[], unsolvedTasks: CourseTasks[] | null, studentId: number) => {
+    let solution: SolutionResult | null
+    for(let i = 0; i < tasks.length; i++)
+    {
+        solution = await getSolution({taskId: tasks[i].id, studentId: studentId});
+        if(solution === null)
+        {
+            unsolvedTasks?.push(tasks[i]);
+        } 
+    }
+}
+const findTasks = async (courseId: number, unsolvedTasks: CourseTasks[] | null, studentId: number) => {
+    let tasks: CourseTasks[] | null
+    tasks = await getTasks(courseId);
+        if(tasks)
+            await findSolutions(tasks, unsolvedTasks, studentId)
+}
 
 const taskRouter: Router = Router();
 
 taskRouter.get("/", async (req:Request, res:Response) => {
     const id = req.query.id;
-    console.log(id);
-    const tasks = await getTasks(Number(id));
-
-    if(!tasks)
-        return res.status(404).send({"message": "There aren't any tasks"})
-
-    res.status(200).send({"message": "Success", "data": tasks});
+    const user = req.session.user;
+    
+    if(user?.role === "professor")
+    {
+        const tasks = await getTasks(Number(id));
+        if(tasks)
+            return res.status(200).send({"message": "Success", "data": tasks})
+    }else{
+        let unsolvedTasks: CourseTasks[] | null = [];
+        await findTasks(Number(id), unsolvedTasks, user!.id) 
+        if(unsolvedTasks !== [])
+            return res.status(200).send({"message": "Success", "data": unsolvedTasks})
+    }    
+    res.status(404).send({"message": "There aren't any tasks"})
 })
 
 taskRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
@@ -32,15 +59,16 @@ taskRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
 });
 
 taskRouter.put("/", authMiddleware, async (req:Request, res: Response) => {
-    const id = req.query;
-    let checkForTask = await getTaskById(Number(id));
+    const id = req.query.id;
+    console.log(req.body);
+    let doesTaskExist = await getTaskById(Number(id));
 
-    if(!checkForTask)
+    if(!doesTaskExist)
         return res.status(404).send({"message": "Task does not exist"});
     
-    checkForTask = await getTask(req.body.name);
+    doesTaskExist = await checkForTask(req.body.name, Number(id));
 
-    if(checkForTask)
+    if(doesTaskExist)
         return res.status(400).send({"message": "Task with given name already exists"});
     
     const taskUpdated = await updateTask({id: Number(id), name: req.body.name, expirationDate: req.body.expirationDate});

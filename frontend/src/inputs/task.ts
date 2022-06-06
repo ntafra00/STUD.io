@@ -1,6 +1,4 @@
-interface Task {
+export interface Task {
     name: string,
     expirationDate: Date,
 }
-
-export default Task;

@@ -69,8 +69,9 @@ const ReportsProvider: React.FC<IProviderProps> = ({children}) => {
             })
             if(response.status === 200)
             {
-                let filteredReports = state.reports.filter((report) => report.id !== reviewData.id);
-                setState({...state, reports: filteredReports})
+                let filterAllReports = state.reports.filter((report) => report.id !== reviewData.id);
+                let filterSelectedReports = state.filteredReports.filter((report) => report.id !== reviewData.id)
+                setState({...state, reports: filterAllReports, filteredReports: filterSelectedReports})
             }
         } catch (error) {
             console.log(error);

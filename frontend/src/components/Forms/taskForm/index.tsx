@@ -1,15 +1,15 @@
-import React, {useState} from "react"
+import React, {useEffect, useState, useContext} from "react"
 import { useForm} from "react-hook-form";
 import taskValidation from "./validationSchema";
 import {yupResolver} from "@hookform/resolvers/yup"
-import Task from "../../../inputs/task";
 import { TextField, Button } from "@mui/material";
+import {Task} from "../../../inputs/task"
 import {FieldWrapper, ButtonWrapper} from "../index.styled"
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import API from "../../../utils/api/api"
 import {checkIfDateIsValid} from "../../../utils/helpers"
+import {TaskContext} from "../../../context/contexts/taskContext"
 
 interface IProps {
     dialogState: boolean;
@@ -18,42 +18,51 @@ interface IProps {
 
 const TaskForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
 
-    const {register, handleSubmit, setError, reset, formState } = useForm<Task>({
+    const {register, handleSubmit, setError, reset, formState, setValue} = useForm<Task>({
         mode: "onSubmit",
         resolver: yupResolver(taskValidation),
         shouldFocusError: true
     });
 
-    const [value, setValue] = React.useState<Date | null>(new Date());
+    const {state, actions} = useContext(TaskContext)
+
+    const [dateValue, setDateValue] = React.useState<Date | null>(null);
 
     const onSubmit = async (data: Task) => {
         
-        if(!checkIfDateIsValid(data.expirationDate))
+        if(!checkIfDateIsValid(dateValue))
         {
             setError("expirationDate", {message: "Invalid date input"})
             return;
         }
 
-        let dateToString = data.expirationDate.toISOString();
+        let dateToString = new Date(dateValue).toISOString();
         let formatedDate = dateToString.split("T");
         let date = `${formatedDate[0]} ${formatedDate[1]}`;
 
-        try {
-            let response = await API.post("/task", {
-                "name": data.name,
-                "expirationDate": date,
-                "courseId": 1
-            })
-            
-            if(response.status === 200)
+        if(state.selectedTask)
+        {
+            let error = await actions.updateTask({"name": data.name, "expiration_date": date})
+            if(error)
             {
-                reset();
-                setDialogState(false);
-            }    
-        } catch (error) {
-            setError("name", {message: "Task with that name already exists"})
+                setError("expirationDate", {message: "Task with given name already exists"})
+                return;
+            }
+        }else{
+            let error = await actions.addNewTask({"name": data.name, "expiration_date": date})
+            if(error)
+            {
+                setError("expirationDate", {message: "Task with given name already exists"})
+                return;
+            }
         }
+
+        setDialogState(false);
     }
+
+    useEffect(() => {
+        setValue("name", state.selectedTask.name)
+    }, [state.selectedTask])
 
     return (
       <>
@@ -75,14 +84,15 @@ const TaskForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
                     {...register("expirationDate")}
                     renderInput={(props) => <TextField {...props} variant="outlined" fullWidth error={!!formState.errors.expirationDate?.message} helperText={formState.errors.expirationDate?.message}/>}
                     label="Expiration date"
-                    value={value}
-                    onChange={(newDate) => {setValue(newDate)}}
+                    value={(state.selectedTask && dateValue === null) ? state.selectedTask.expiration_date : dateValue}
+                    onChange={(newDate) => {setDateValue(newDate)}}
                     />
                 </LocalizationProvider>
             </div>
             <ButtonWrapper>
                 <Button onClick={() => {setDialogState(false)}}>Close</Button>
-                <Button type="submit">Add</Button>
+                {state.selectedTask ? <Button type="submit">Edit</Button> : <Button type="submit">Add</Button>
+}
             </ButtonWrapper>
         </form>
       </>

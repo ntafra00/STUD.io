@@ -10,6 +10,7 @@ import { dashboardRouter } from "./routes/dashboard";
 import cors from "cors";
 import morgan from "morgan"
 import fileUpload from "express-fileupload";
+import { fileRouter } from "./routes/file";
 
 const app = express();
 
@@ -72,7 +73,7 @@ app.use("/api/course", courseRouter);
 app.use("/api/task", taskRouter);
 app.use("/api/student", studentRouter)
 app.use("/api/dashboard", dashboardRouter);
-
+app.use("/api/file", fileRouter)
 
 app.listen(8080, () => {
     console.log("Application is listening on port 8080.");

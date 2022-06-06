@@ -16,3 +16,17 @@ export const checkIfDateIsValid = (date: Date) => {
         return false;
     return true;
 }
+
+export const convertDate = (date: Date) => {
+    let dateToString = date.toString();
+    return `${dateToString.split("T")[0]} ${dateToString.split("T")[1].split(".")[0]}`
+}   
+
+export const testIfDateIsInPast = (date) => {
+    const givenDate = new Date(date);
+    const currentDate = new Date();
+    if (givenDate.getTime() < currentDate.getTime()) {
+      return true;
+    }
+    return false;
+}

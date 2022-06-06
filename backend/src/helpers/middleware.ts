@@ -11,7 +11,7 @@ const authMiddleware = (req:Request, res:Response, next: NextFunction) => {
     if (path[path.length - 1] === "/") {
         path = path.slice(0, path.length - 1);
     }
-    
+
     if(PERMISSIONS[path][httpMethod].includes(role))
         next();
     else    

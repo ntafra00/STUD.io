@@ -3,13 +3,17 @@ import fs from "fs"
 import crypto from "crypto"
 import path from "path"
 import { BASE_FILE_PATH } from "../constants";
-import { createSolution, deleteSolution, getAllSolutions, getSolution, getSolutionById, getStudentSolutions } from "../db/db";
+import { createSolution, deleteSolution, getAllSolutions, getSolution, getSolutionById, getSolutionGraphData, getStudentSolutions, getTasks, markSolution, setSolutionAsChecked } from "../db/db";
 import { SolutionResult } from "../models/dbResults/solution";
 import { authMiddleware } from "../helpers/middleware";
 
 const solutionRouter: Router =  Router();
 
 solutionRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
+
+    console.log(req.body);
+    console.log(req.files);
+
     if(!req.files){
         return res.status(400).send({
             "message": "Missing files"
@@ -45,8 +49,8 @@ solutionRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
 });
 
 
-solutionRouter.delete("/:id", authMiddleware, async (req:Request, res:Response) => {
-    const {id} = req.params;
+solutionRouter.delete("/", authMiddleware, async (req:Request, res:Response) => {
+    const {id} = req.query;
 
     const solutionExists: SolutionResult = await getSolutionById(Number(id));
     
@@ -77,14 +81,56 @@ solutionRouter.get("/", authMiddleware, async (req: Request, res:Response) => {
     }else{
         let professorSolutions = await getAllSolutions("Not given")
         if(professorSolutions)
+        {
+            let tasks = await getTasks(1);
             return res.status(200).send({
                 "message": "Success",
-                "data": professorSolutions
+                "data": {
+                    "professorSolutions": professorSolutions,
+                    "tasks": tasks
+                }
             })
+        }     
     }
 
     res.status(404).send({
         "message": "There aren't any solutions"
+    })
+})
+
+solutionRouter.put("/", authMiddleware, async (req: Request, res: Response) => {
+    const {id, mark, description} = req.body;
+
+    if(mark)
+    {let solutionMarked = await markSolution({id, mark, description})
+    if(!solutionMarked)
+        return res.status(400).send({
+            "message": "Solution was not marked"
+        })
+    }else {
+        let solutionChecked = await setSolutionAsChecked(id);
+        if(!solutionChecked)
+            return res.status(400).send({
+                "message": "Solution not checked"
+            })
+    }  
+    res.status(200).send({
+        "message": "Success"
+    })
+})
+
+solutionRouter.get("/progress", authMiddleware, async (req: Request, res: Response) => {
+    const studentID = req.session.user?.id;
+
+    let graphData = await getSolutionGraphData(Number(studentID))
+    if(!graphData)
+        return res.status(404).send({
+            "message": "There isn't any marked solution"
+        })
+
+    res.status(200).send({
+        "message": "Success",
+        "data": graphData
     })
 })
 

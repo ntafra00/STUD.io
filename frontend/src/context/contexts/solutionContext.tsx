@@ -13,6 +13,7 @@ interface ISolutionContext {
         getSolutions: Function;
         deleteSolution: Function;
         getMarkedSolutions: Function;
+        uploadSolution: Function;
     } | null
 }
 
@@ -66,7 +67,6 @@ const SolutionsProvider: React.FC<IProviderProps> = ({children}) => {
             let response = await API.get("/solution/progress")
             if(response.status === 200)
             {
-                console.log(response.data.data);
                 setState({...state, markedSolutions: [...response.data.data]})
             }
         } catch (error) {
@@ -74,8 +74,29 @@ const SolutionsProvider: React.FC<IProviderProps> = ({children}) => {
         }
     }
 
+    const uploadSolution = async (file, taskId: number) => {
+        
+        const solutionData = new FormData()
+        solutionData.append("file", file);
+        solutionData.append("mark", "Not given");
+        solutionData.append("description", "Not given");
+        solutionData.append("taskId", String(taskId));
+        solutionData.append("checked", "false");
+        try {
+            let response = await API.post("/solution", solutionData)
+            console.log(response);
+            if(response.status === 200)
+            {
+                setState({...state, solutions: [...state.solutions, response.data.data]})
+            }
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
     return (
-        <SolutionContext.Provider value={{state: state, actions: {getSolutions, deleteSolution, getMarkedSolutions} }}>
+        <SolutionContext.Provider value={{state: state, actions: {getSolutions, deleteSolution, getMarkedSolutions, uploadSolution} }}>
             {children}
         </SolutionContext.Provider>
     )

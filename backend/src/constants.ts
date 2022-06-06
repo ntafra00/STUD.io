@@ -1,4 +1,3 @@
-export const routes : string[] = ["auth", "student", "course"]
 export const BASE_FILE_PATH: string = __dirname + "/files";
 
 export const PERMISSIONS = {
@@ -21,7 +20,11 @@ export const PERMISSIONS = {
     "/api/solution": {
         POST: ["student"],
         DELETE: ["student"],
-        GET: ["professor", "student"]
+        GET: ["professor", "student"],
+        PUT: ["professor", "student"],
+    },
+    "/api/solution/progress": {
+        GET: ["student"]
     },
     "/api/dashboard": {
         GET: ["professor", "student"]
@@ -30,6 +33,9 @@ export const PERMISSIONS = {
         GET: ["professor"],
         DELETE: ["professor"],
         POST: ["professor"],
-        PUT: ["profesor"]
+        PUT: ["professor"]
+    },
+    "/api/file":{
+        GET: ["professor", "student"]
     }
 }

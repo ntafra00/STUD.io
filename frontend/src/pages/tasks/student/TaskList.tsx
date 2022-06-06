@@ -1,23 +1,43 @@
 import React, {useContext} from "react"
-import Grid from "@mui/material/Grid";
-import TaskCard from "./TaskCard"
+import {TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Typography} from "@mui/material"
 import { TaskContext } from "../../../context/contexts/taskContext";
+import { convertDate, testIfDateIsInPast} from "../../../utils/helpers"
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 
+interface IProps {
+    dialogState: boolean;
+    setDialogState: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-const TaskList: React.FC = () => {
+const TaskList: React.FC<IProps> = ({dialogState, setDialogState}) => {
 
     const {state, actions} = useContext(TaskContext);
 
     return (
-        <Grid container rowSpacing={2} columnSpacing={{ xs: 2}}>
-            {state.tasks.map((task) => {
-                return (
-                    <Grid item key={task.id} xs={4}>
-                        <TaskCard expiration_date={task.expiration_date} name={task.name} id={task.id}></TaskCard>
-                    </Grid>
-                )
-            })}
-        </Grid>
+        <TableContainer style={{height: "400px", width: "70%"}}>
+          <Table aria-label="sticky table" stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell >Task name</TableCell>
+                <TableCell>Upload until</TableCell>
+                <TableCell >Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {state?.tasks?.map((task, index) => (
+                <TableRow
+                  key={index}
+                >
+                  <TableCell>{task.name}</TableCell>
+                  <TableCell >{convertDate(task.expiration_date)}</TableCell>
+                  <TableCell>
+                      {testIfDateIsInPast(task.expiration_date) ? <Typography>Time's up</Typography> : <IconButton onClick={() => {actions.setSelectedTask(task.id); setDialogState(true)}}><UploadFileIcon/></IconButton>}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
     )
 }
 
