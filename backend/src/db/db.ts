@@ -226,7 +226,7 @@ async function getStudentSolutions (studentId: number) {
 
 async function getSolutionGraphData (studentId: number) {
     const res: QueryResult = await pool.query(
-        `SELECT s.id, s.mark, t.expiration_date FROM solution AS s INNER JOIN task AS t ON s.task_id = t.id WHERE s.mark != 'Not given' AND s.student_id = $1`, [studentId])
+        `SELECT s.id, s.mark, t.expiration_date FROM solution AS s INNER JOIN task AS t ON s.task_id = t.id WHERE s.mark != 'Not given' AND s.student_id = $1 ORDER BY t.expiration_date ASC`, [studentId])
     return res.rowCount ? res.rows : null;
 }
 

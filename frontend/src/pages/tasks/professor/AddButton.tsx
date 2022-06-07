@@ -8,16 +8,16 @@ interface IProps {
     setDialogState: React.Dispatch<React.SetStateAction<boolean>>
   }
 
-const Options: React.FC<IProps> = ({dialogState, setDialogState}) => {
+const AddButton: React.FC<IProps> = ({dialogState, setDialogState}) => {
 
     return (
         <>
             <StyledDiv>
-                <Button variant="outlined" onClick={() => setDialogState(true)}>Add student</Button>
+                <Button variant="outlined" onClick={() => setDialogState(true)}>Add task</Button>
             </StyledDiv>
             
         </>
     )
 }
 
-export default Options;
+export default AddButton;

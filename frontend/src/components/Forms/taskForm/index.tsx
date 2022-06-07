@@ -61,7 +61,8 @@ const TaskForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
     }
 
     useEffect(() => {
-        setValue("name", state.selectedTask.name)
+        if(state.selectedTask)
+            setValue("name", state.selectedTask.name)
     }, [state.selectedTask])
 
     return (
@@ -83,7 +84,7 @@ const TaskForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
                     <DateTimePicker
                     {...register("expirationDate")}
                     renderInput={(props) => <TextField {...props} variant="outlined" fullWidth error={!!formState.errors.expirationDate?.message} helperText={formState.errors.expirationDate?.message}/>}
-                    label="Expiration date"
+                    label="Expiration date*"
                     value={(state.selectedTask && dateValue === null) ? state.selectedTask.expiration_date : dateValue}
                     onChange={(newDate) => {setDateValue(newDate)}}
                     />
