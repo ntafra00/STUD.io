@@ -9,10 +9,7 @@ export const checkIfDateIsValid = (date: Date) => {
     
     const currentDate = new Date();
 
-    console.log(date.getTime());
-    console.log(currentDate.getTime())
-
-    if(currentDate.getTime() > date.getTime())
+    if(currentDate.getTime() > new Date(date).getTime())
         return false;
     return true;
 }

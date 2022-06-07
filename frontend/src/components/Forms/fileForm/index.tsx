@@ -4,7 +4,6 @@ import { ButtonWrapper } from "../index.styled";
 import {TaskContext} from "../../../context/contexts/taskContext"
 import {SolutionContext} from "../../../context/contexts/solutionContext"
 import {Button, Typography, useStepContext} from "@mui/material"
-import { FormWrapper } from "../../../pages/login/index.styled";
 
 interface IProps {
     dialogState: boolean;
@@ -13,7 +12,7 @@ interface IProps {
 
 const FileForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
 
-    const {register, handleSubmit, control} = useForm({
+    const {register, handleSubmit} = useForm({
         mode: "onSubmit",
     });
 
@@ -22,12 +21,11 @@ const FileForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
     const [inputError, setInputError] = useState<boolean>(false)
 
     const onSubmit = async (data) => {
-        if(!data)
+        if(data.file.length === 0)
         {
             setInputError(true);
             return;
         }
-        console.log(state.selectedTask.id)
         let error = await solutionContext.actions.uploadSolution(data.file[0], state.selectedTask.id)
         if(!error)
         {
@@ -38,21 +36,11 @@ const FileForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
 
     return (  
         <form onSubmit={handleSubmit(onSubmit)}>
-            <FormWrapper>
-                <Controller
-                    control={control}
-                    name="file"
-                    render={({
-                      field: { onChange, name, ref },
-                    }) => (
-                      <input
-                        onChange={onChange} // send value to hook form
-                        type="file"
-                      />
-                    )}
-                />
-                {inputError && <Typography variant="h6" style={{color: "red"}}>No file given!</Typography>}
-            </FormWrapper>
+            <div style={{width: "100%", display: "flex", flexDirection: "column"}}>
+                <label>Select which file you want to upload: </label>
+                <input {...register("file")} type="file" name="file" style={{margin: "10px 0 0 0"}}/>
+                {inputError && <Typography variant="subtitle1" style={{color: "red", margin: "30px 0 0 0"}}>No file given!</Typography>}
+            </div>
             <ButtonWrapper>
                 <Button onClick={() => {setDialogState(false); actions.removeSelectedTask()}}>Close</Button>
                 <Button type="submit">Add</Button>

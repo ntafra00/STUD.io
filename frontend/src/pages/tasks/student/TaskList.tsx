@@ -24,17 +24,17 @@ const TaskList: React.FC<IProps> = ({dialogState, setDialogState}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {state?.tasks?.map((task, index) => (
-                <TableRow
-                  key={index}
-                >
-                  <TableCell>{task.name}</TableCell>
-                  <TableCell >{convertDate(task.expiration_date)}</TableCell>
-                  <TableCell>
-                      {testIfDateIsInPast(task.expiration_date) ? <Typography>Time's up</Typography> : <IconButton onClick={() => {actions.setSelectedTask(task.id); setDialogState(true)}}><UploadFileIcon/></IconButton>}
-                  </TableCell>
+              {state.tasks?.map((task, index) => {
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{task.name}</TableCell>
+                    <TableCell >{convertDate(task.expiration_date)}</TableCell>
+                    <TableCell>
+                      {testIfDateIsInPast(task.expiration_date) ? <Typography><strong>TIME'S UP</strong></Typography> : <IconButton onClick={() => {actions.setSelectedTask(task.id); setDialogState(true)}}><UploadFileIcon/></IconButton>}
+                    </TableCell>
                 </TableRow>
-              ))}
+                )
+              })}
             </TableBody>
           </Table>
         </TableContainer>

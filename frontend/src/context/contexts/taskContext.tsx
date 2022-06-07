@@ -109,6 +109,7 @@ const TaskProvider: React.FC<IProviderProps> = ({children}) => {
     }
     
     const filterTasks = (taskId: number) => {
+        console.log("I am here")
         setState({...state, tasks: [state.tasks.filter((task) => task.id !== taskId)]})
     }
 
