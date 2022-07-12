@@ -5,18 +5,21 @@ export const generatePassword = (fullName: string) => {
     return `${splittedFullName[0].slice(0,3)}${splittedFullName[1].slice(0,3)}${currentYear[2]}${currentYear[3]}`
 }
 
-export const checkIfDateIsValid = (date: Date) => {
+// export const checkIfDateIsValid = (date: Date) => {
     
-    const currentDate = new Date();
+//     const currentDate = new Date();
 
-    if(currentDate.getTime() > new Date(date).getTime())
-        return false;
-    return true;
-}
+//     if(currentDate.getTime() > new Date(date).getTime())
+//         return false;
+//     return true;
+// }
 
 export const convertDate = (date: Date) => {
     let dateToString = date.toString();
-    return `${dateToString.split("T")[0]} ${dateToString.split("T")[1].split(".")[0]}`
+    if(dateToString.includes("T"))
+        return `${dateToString.split("T")[0]} ${dateToString.split("T")[1].split(".")[0]}`
+    else
+        return `${dateToString.split(" ")[0]} ${dateToString.split(" ")[1].split(".")[0]}`
 }   
 
 export const testIfDateIsInPast = (date) => {

@@ -79,6 +79,13 @@ async function getUser(userEmail: string){
     return res.rowCount ? res.rows[0] : null;
 }
 
+async function getUserById(userId: number) {
+    const res: QueryResult = await pool.query(`
+    SELECT email FROM users WHERE id = $1`, [userId]);
+
+    return res.rowCount ? res.rows[0] : null;
+}
+
 async function getUsers(role: string){
     const res: QueryResult = await pool.query(`
     SELECT id, full_name, email FROM users WHERE role = $1 ORDER BY full_name ASC`, [role]);
@@ -276,4 +283,4 @@ async function getTaskById (taskId: number) {
     return res.rowCount ? res.rows[0] : null;
 }
 
-export { createTables, getUser, deleteUser, createUser, createCourse, deleteCourse, updateCourse, getProfessorCourses, getStudentCourses, getUsers, createSolution, getCourse, deleteSolution, addStudentToCourse, createTask, deleteTask, getTasks, getCourseById, getTask, getTaskById , updateTask, getSolution, getSolutionById, getStudentCourseById, getSolutionByTaskId, updateStudent, updateUser, getAllSolutions, getStudentSolutions, markSolution, setSolutionAsChecked, getSolutionGraphData, checkForTask}
+export { createTables, getUser, deleteUser, createUser, createCourse, deleteCourse, updateCourse, getProfessorCourses, getStudentCourses, getUsers, createSolution, getCourse, deleteSolution, addStudentToCourse, createTask, deleteTask, getTasks, getCourseById, getTask, getTaskById , updateTask, getSolution, getSolutionById, getStudentCourseById, getSolutionByTaskId, updateStudent, updateUser, getAllSolutions, getStudentSolutions, markSolution, setSolutionAsChecked, getSolutionGraphData, checkForTask, getUserById}

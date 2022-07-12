@@ -75,7 +75,7 @@ const StudentForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
                 />
             </FieldWrapper>
             <ButtonWrapper>
-                <Button onClick={() => {setDialogState(false)}}>Close</Button>
+                <Button onClick={() => {setDialogState(false); actions.removeSelectedStudent()}}>Close</Button>
                 {state.selectedStudent ? <Button type="submit">Edit</Button> :<Button type="submit">Add</Button>}
             </ButtonWrapper>
         </form>

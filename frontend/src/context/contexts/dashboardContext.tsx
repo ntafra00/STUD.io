@@ -11,6 +11,8 @@ interface IDashboardContext {
         getStudentNews: Function;
         getProfessorNews: Function;
         removeFromDashboard: Function;
+        removeInfoFromProfessorDashboard: Function;
+        removeInfoFromStudentDashboard: Function;
     } | null
 }
 
@@ -73,8 +75,21 @@ const DashboardProvider: React.FC<IProviderProps> = ({children}) => {
         }
     }
 
+    const removeInfoFromProfessorDashboard = (id: number) => {
+        setState({...state, news:state.news.filter(element => element.id !== id)});
+    }
+
+    const removeInfoFromStudentDashboard = (id: number) => {
+        setState({...state, news:state.news.filter(element => {
+            if(element.mark)
+                return element;
+            else if(element.id !== id)
+                return element;
+        })})
+    }
+
     return (
-        <DashboardContext.Provider value = {{state: state, actions: {getStudentNews, getProfessorNews, removeFromDashboard}}}>
+        <DashboardContext.Provider value = {{state: state, actions: {getStudentNews, getProfessorNews, removeFromDashboard, removeInfoFromProfessorDashboard, removeInfoFromStudentDashboard}}}>
             {children}
         </DashboardContext.Provider>
     )

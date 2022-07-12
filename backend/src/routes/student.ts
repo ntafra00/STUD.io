@@ -1,5 +1,5 @@
 import { Router, Response, Request, NextFunction } from "express";
-import { addStudentToCourse, createUser, deleteUser, getUser, getUsers, updateStudent } from "../db/db";
+import { addStudentToCourse, createUser, deleteUser, getUser, getUsers, updateStudent, getUserById } from "../db/db";
 import { authMiddleware } from "../helpers/middleware";
 import bcrypt from "bcrypt"
 import {UserResult} from "../models/dbResults/user"
@@ -67,13 +67,18 @@ studentRouter.delete("/", authMiddleware, async (req: Request, res: Response) =>
 
 studentRouter.put("/", authMiddleware, async (req: Request, res: Response) => {
     const id = req.query.id;
-    const emailInUse = await getUser(req.body.email);
 
-    if(emailInUse)
-        return res.status(400).send({
-            "message": "User with that email already exists"
-        })
+    const existingUser = await getUserById(Number(id));
 
+    if(!existingUser)
+    {
+        const emailInUse = await getUser(req.body.email);
+        if(emailInUse)
+            return res.status(400).send({
+                "message": "User with that email already exists"
+            })
+    }
+    
     await updateStudent({email: req.body.email, fullName: req.body.fullName, id: Number(id)})
 
     res.status(200).send({

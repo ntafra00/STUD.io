@@ -47,7 +47,7 @@ const TaskTable: React.FC<IProps> = ({dialogState, setDialogState}) => {
                 >
                   <TableCell >{task.id}</TableCell>
                   <TableCell >{task.name}</TableCell>
-                  <TableCell >{convertDate(task.expiration_date)}</TableCell>
+                  <TableCell >{convertDate(task.expiration_date).slice(0,-3)}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => {handleDelete(task.id)}}><DeleteIcon></DeleteIcon></IconButton>
                     <IconButton onClick={() => {actions.setSelectedTask(task.id); setDialogState(true);}}><EditIcon></EditIcon></IconButton>

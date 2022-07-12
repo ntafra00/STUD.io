@@ -28,7 +28,7 @@ const TaskList: React.FC<IProps> = ({dialogState, setDialogState}) => {
                 return (
                   <TableRow key={index}>
                     <TableCell>{task.name}</TableCell>
-                    <TableCell >{convertDate(task.expiration_date)}</TableCell>
+                    <TableCell >{convertDate(new Date(task.expiration_date)).slice(0,-3)}</TableCell>
                     <TableCell>
                       {testIfDateIsInPast(task.expiration_date) ? <Typography><strong>TIME'S UP</strong></Typography> : <IconButton onClick={() => {actions.setSelectedTask(task.id); setDialogState(true)}}><UploadFileIcon/></IconButton>}
                     </TableCell>

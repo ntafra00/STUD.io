@@ -8,7 +8,6 @@ const fileRouter = Router();
 
 fileRouter.get("/", authMiddleware, (req: Request, res: Response) => {
     const fileName = req.query.fileName;
-    console.log(fileName);
     const filePath = path.join(BASE_FILE_PATH, String(fileName)); 
 
     res.download(filePath);

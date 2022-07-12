@@ -12,7 +12,8 @@ const Solutions: React.FC = () => {
     const {user} = useContext(UserContext)
 
     useEffect(() => {
-        actions.getSolutions();
+        if(state.solutions.length === 0)
+            actions.getSolutions();
     }, [user])
 
     return (

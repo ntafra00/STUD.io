@@ -3,6 +3,7 @@ import { useForm, Controller} from "react-hook-form";
 import { ButtonWrapper } from "../index.styled";
 import {TaskContext} from "../../../context/contexts/taskContext"
 import {SolutionContext} from "../../../context/contexts/solutionContext"
+import { DashboardContext } from "../../../context/contexts/dashboardContext";
 import {Button, Typography, useStepContext} from "@mui/material"
 
 interface IProps {
@@ -17,7 +18,8 @@ const FileForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
     });
 
     const {state, actions} = useContext(TaskContext);
-    const solutionContext = useContext(SolutionContext)
+    const solutionContext = useContext(SolutionContext);
+    const dashboardContext = useContext(DashboardContext);
     const [inputError, setInputError] = useState<boolean>(false)
 
     const onSubmit = async (data) => {
@@ -31,6 +33,7 @@ const FileForm: React.FC<IProps> = ({dialogState, setDialogState}) => {
         {
             actions.filterTasks(state.selectedTask.id)
             setDialogState(false);
+            dashboardContext.actions.removeInfoFromStudentDashboard(state.selectedTask.id);
         }
     }
 

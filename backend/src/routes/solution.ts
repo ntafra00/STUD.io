@@ -10,10 +10,7 @@ import { authMiddleware } from "../helpers/middleware";
 const solutionRouter: Router =  Router();
 
 solutionRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
-
-    console.log(req.body);
-    console.log(req.files);
-
+    
     if(!req.files){
         return res.status(400).send({
             "message": "Missing files"

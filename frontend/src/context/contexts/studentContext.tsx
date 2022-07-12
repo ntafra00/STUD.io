@@ -100,8 +100,7 @@ const StudentsProvider: React.FC<IProviderProps> = ({children}) => {
             {
                 let studentIndex = state.students.findIndex((student) => student.id === state.selectedStudent.id)
                 let updatedStudents = state.students;
-                updatedStudents[studentIndex].email = studentData.email;
-                updatedStudents[studentIndex].fullName = studentData.fullName
+                updatedStudents[studentIndex] = {...updatedStudents[studentIndex],email: studentData.email, full_name: studentData.fullName};
                 setState({...state, students: updatedStudents})
             }
         } catch (error) {

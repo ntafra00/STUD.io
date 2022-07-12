@@ -75,7 +75,6 @@ const TaskProvider: React.FC<IProviderProps> = ({children}) => {
     }
 
     const updateTask = async (updateData: Task) => {
-        console.log(updateData);
         try {
             let response = await API.put(`/task/?id=${state.selectedTask.id}`, {
                 "name": updateData.name,
@@ -86,7 +85,7 @@ const TaskProvider: React.FC<IProviderProps> = ({children}) => {
                 let taskIndex = state.tasks.findIndex((task) => task.id === state.selectedTask.id)
                 let updatedTasks = state.tasks;
                 updatedTasks[taskIndex].name = updateData.name;
-                updatedTasks[taskIndex].expirationDate = updateData.expiration_date;
+                updatedTasks[taskIndex].expiration_date = updateData.expiration_date;
                 setState({...state, tasks: updatedTasks})
             }
         } catch (error) {
@@ -110,7 +109,9 @@ const TaskProvider: React.FC<IProviderProps> = ({children}) => {
     
     const filterTasks = (taskId: number) => {
         console.log("I am here")
-        setState({...state, tasks: [state.tasks.filter((task) => task.id !== taskId)]})
+        console.log(taskId);
+        const filteredTasks = state.tasks.filter((task) => task.id !== taskId);
+        setState({...state, tasks: filteredTasks});
     }
 
     return (

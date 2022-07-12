@@ -60,7 +60,6 @@ taskRouter.post("/", authMiddleware, async (req:Request, res:Response) => {
 
 taskRouter.put("/", authMiddleware, async (req:Request, res: Response) => {
     const id = req.query.id;
-    console.log(req.body);
     let doesTaskExist = await getTaskById(Number(id));
 
     if(!doesTaskExist)
@@ -84,7 +83,7 @@ taskRouter.put("/", authMiddleware, async (req:Request, res: Response) => {
 
 
 taskRouter.delete("/", authMiddleware, async (req:Request, res:Response) => {
-    const id = req.query;
+    const id = req.query.id;
     const checkForTask = await getTaskById(Number(id));
     
     if(!checkForTask)
